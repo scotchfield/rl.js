@@ -13,18 +13,18 @@ body {
 <script src="../src/rl.js" type="text/javascript"></script>
 <script type="text/javascript">
 var game = (function () {
-    var canvas, timer, g = 0;
+    var canvas, timer, g = 0,
 
-    var init = function () {
+    init = function () {
         canvas = rl.canvas({width: 12, height: 1});
         document.getElementById('game_canvas').appendChild(canvas);
 
-        timer = setInterval((function () {
+        timer = setInterval(function () {
             g = (g + 16) % 256;
             rl.clear()
                 .style('#' + g.toString(16) + g.toString(16) + g.toString(16))
                 .write('Hello World!', 0, 0);
-        }), 50);
+        }, 50);
     };
 
     init();
