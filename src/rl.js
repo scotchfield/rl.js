@@ -36,13 +36,32 @@ var rl = (function () {
         );
     };
 
-    exports.print = function (s, x, y) {
-//        var cx 
+    exports.clear = function () {
+        ctx.fillStyle = options.backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        return this;
+    };
+
+    exports.style = function (c) {
+        ctx.fillStyle = c;
+
+        return this;
+    };
+
+    exports.write = function (s, x, y) {
+        for (var i = 0; i < s.length; i += 1) {
+            ctx.fillText(s[i],
+                (x + i + 1) * options.tileWidth - 8,
+                (y + 1) * options.tileWidth);
+        }
+
+        return this;
     };
 
     exports.canvas = function (opt) {
         for (var k in opt) {
-            if (opt.hasOwnProperty(k) && ! options.hasOwnProperty(k)) {
+            if (opt.hasOwnProperty(k)) {
                 options[k] = opt[k];
             }
         }
@@ -52,17 +71,10 @@ var rl = (function () {
 
         canvas.width = options.width * options.tileWidth;
         canvas.height = options.height * options.tileHeight;
-
-        ctx.fillStyle = options.backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this.clear();
 
         ctx.font = options.font;
-        ctx.fillStyle = options.fontFillStyle;
         ctx.textAlign = options.textAlign;
-        for (var x = 0; x < 16; x += 1) {
-            ctx.fillText('@',
-                (x + 1) * options.tileWidth - 8, 1 * options.tileWidth);
-        }
 
         return canvas;
     };
