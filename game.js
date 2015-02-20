@@ -1,4 +1,4 @@
-var canvas = r.canvas({herp: 'derp'});
+var canvas = rl.canvas({herp: 'derp'});
 document.getElementById('game_canvas').appendChild(canvas);
 
 var game = (function (canvas) {
@@ -8,13 +8,13 @@ var game = (function (canvas) {
         console.log(e);
     };
     var keydownTitle = function keydown(e) {
-        r.unregisterKeydown(keydown);
+        rl.unregisterKeydown(keydown);
         state = 'map';
-        r.registerKeydown(keydownMap);
+        rl.registerKeydown(keydownMap);
         console.log(keydownMap);
         console.log(e);
     };
 
     state = 'title';
-    r.registerKeydown(keydownTitle);
+    rl.registerKeydown(keydownTitle);
 }(canvas));

@@ -1,4 +1,4 @@
-var r = (function () {
+var rl = (function () {
     'use strict';
 
     var exports = {};
