@@ -49,8 +49,8 @@ var game = (function () {
         rl.clear();
         tiles.forEach(
             function (tile) {
-                rl.style(tile.t.style());
-                rl.square(tile.x, tile.y);
+                rl.style(tile.t.style())
+                    .square(tile.x, tile.y);
             }
         );
     }, 50);

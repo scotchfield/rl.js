@@ -18,6 +18,8 @@ var rl = (function () {
 
     exports.registerKeydown = function (cb) {
         keydownCallbacks.push(cb);
+
+        return this;
     };
 
     exports.unregisterKeydown = function (cb) {
@@ -26,6 +28,8 @@ var rl = (function () {
                 keydownCallbacks.splice(i, 1);
             }
         }
+
+        return this;
     };
 
     exports.keydown = function (e) {
@@ -34,6 +38,8 @@ var rl = (function () {
                 currentValue(e);
             }
         );
+
+        return this;
     };
 
     exports.clear = function () {
