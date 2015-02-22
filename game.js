@@ -1,4 +1,4 @@
-var canvas = rl.canvas({herp: 'derp'});
+var canvas = rl.canvas();
 document.getElementById('game_canvas').appendChild(canvas);
 
 var game = (function (canvas) {
