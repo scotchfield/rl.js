@@ -59,6 +59,13 @@ var rl = (function () {
         return this;
     };
 
+    exports.square = function (x, y) {
+        ctx.fillRect(x * options.tileWidth, y * options.tileHeight,
+                     options.tileWidth, options.tileHeight);
+
+        return this;
+    };
+
     exports.canvas = function (opt) {
         for (var k in opt) {
             if (opt.hasOwnProperty(k)) {

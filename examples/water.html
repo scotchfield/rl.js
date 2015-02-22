@@ -50,7 +50,7 @@ var game = (function () {
         tiles.forEach(
             function (tile) {
                 rl.style(tile.t.style());
-                rl.write(tile.t.c, tile.x, tile.y);
+                rl.square(tile.x, tile.y);
             }
         );
     }, 50);
