@@ -15,8 +15,8 @@ body {
 var game = (function () {
     var canvas, timer, tiles = [];
 
-    var WaterTile = function (t) {
-        this.start = Date.now();
+    var WaterTile = function (start, t) {
+        this.start = start;
         this.t = t;
         this.c = '#';
         this.style = function () {
@@ -38,6 +38,7 @@ var game = (function () {
         for (var i = 0; i < 20; i += 1) {
             for (var j = 0; j < 20; j += 1) {
                 tiles.push({x: i, y: j, t: new WaterTile(
+                    Date.now() + Math.random() * 4000,
                     Math.round(2000 + Math.random() * 2000))});
             }
         }
