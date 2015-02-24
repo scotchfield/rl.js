@@ -94,6 +94,13 @@ var rl = (function () {
         return canvas;
     };
 
+    exports.create = function (id) {
+        canvas = this.canvas();
+        document.getElementById(id).appendChild(canvas);
+
+        return this;
+    };
+
     window.addEventListener('keydown', exports.keydown);
 
     return exports;

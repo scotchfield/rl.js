@@ -39,12 +39,10 @@ var game = (function () {
             .push(renderGame);
         state = 'map';
         render();
-    },
+    };
 
-    canvas = rl.canvas();
-    document.getElementById('game_canvas').appendChild(canvas);
-
-    rl.registerKeydown(keydownTitle);
+    rl.create('game_canvas')
+        .registerKeydown(keydownTitle);
 
     state = 'title';
     renderCb.push(renderTitle);
