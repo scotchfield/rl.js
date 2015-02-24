@@ -94,8 +94,8 @@ var rl = (function () {
         return canvas;
     };
 
-    exports.create = function (id) {
-        canvas = this.canvas();
+    exports.create = function (id, options) {
+        canvas = this.canvas(options);
         document.getElementById(id).appendChild(canvas);
 
         return this;

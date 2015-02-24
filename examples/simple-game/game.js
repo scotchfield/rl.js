@@ -41,7 +41,13 @@ var game = (function () {
         render();
     };
 
-    rl.create('game_canvas')
+    var options = {
+        font: '12pt monospace',
+        tileWidth: 16,
+        tileHeight: 16
+    };
+
+    rl.create('game_canvas', options)
         .registerKeydown(keydownTitle);
 
     state = 'title';
