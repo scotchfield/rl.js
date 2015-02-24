@@ -3,6 +3,8 @@ var rl = (function () {
 
     var exports = {};
 
+    var tiles = [];
+
     var canvas = false, ctx = false,
     options = {
         width: 40,
