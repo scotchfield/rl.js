@@ -1,5 +1,5 @@
 var game = (function () {
-    var canvas, state, renderCb = [],
+    var canvas, state, renderCb = [], timer,
         player, width = 60, height = 35,
         map = {};
 
@@ -26,7 +26,7 @@ var game = (function () {
     },
 
     renderTitle = function () {
-        var opacity = 1;
+        var opacity = 0.7 + 0.3 * Math.cos((Date.now() % 6290) / 1000);
         rl.clear()
             .style('rgba(0,95,191,' + opacity + ')')
                 .write('w', 2, 1)
@@ -98,6 +98,7 @@ var game = (function () {
     keydownTitle = function keydown(e) {
         rl.unregisterKeydown(keydown)
             .registerKeydown(keydownMap);
+        clearInterval(timer);
         renderCb.removeCb(renderTitle)
             .push(renderGame);
         setup();
@@ -116,6 +117,7 @@ var game = (function () {
         .registerKeydown(keydownTitle);
 
     state = 'title';
-    renderCb.push(renderTitle);
+    timer = setInterval(renderTitle, 100);
+    //renderCb.push(renderTitle);
     render();
 }());
