@@ -18,10 +18,14 @@ var rl = (function () {
     },
     keydownCallbacks = [];
 
-    var TileBlocking = function () {
-        this.c = '#';
-        this.style = function () { return '#ffffff' };
-        this.blocking = true;
+    exports.TileBlocking = function () {
+        var that = {};
+
+        that.c = '#';
+        that.style = function () { return '#ffffff' };
+        that.blocking = true;
+
+        return that;
     };
 
     exports.registerKeydown = function (cb) {
@@ -66,8 +70,8 @@ var rl = (function () {
     exports.write = function (s, x, y) {
         for (var i = 0; i < s.length; i += 1) {
             ctx.fillText(s[i],
-                (x + i + 1) * options.tileWidth - 8,
-                (y + 1) * options.tileWidth);
+                (x + i + 1) * options.tileWidth - 9,
+                (y + 1) * options.tileWidth - 1);
         }
 
         return this;
@@ -81,7 +85,7 @@ var rl = (function () {
     };
 
     exports.addTile = function (x, y, t) {
-        var tile = (t === undefined) ? new TileBlocking() : t;
+        var tile = (t === undefined) ? this.TileBlocking() : t;
         tiles.push({x: x, y: y, t: tile});
 
         return this;
