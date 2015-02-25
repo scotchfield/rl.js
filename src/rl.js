@@ -18,6 +18,12 @@ var rl = (function () {
     },
     keydownCallbacks = [];
 
+    var TileBlocking = function () {
+        this.c = '#';
+        this.style = function () { return '#ffffff' };
+        this.blocking = true;
+    };
+
     exports.registerKeydown = function (cb) {
         keydownCallbacks.push(cb);
 
@@ -74,6 +80,26 @@ var rl = (function () {
         return this;
     };
 
+    exports.addTile = function (x, y, t) {
+        var tile = (t === undefined) ? new TileBlocking() : t;
+        tiles.push({x: x, y: y, t: tile});
+
+        return this;
+    }
+
+    exports.canMoveTo = function (x, y) {
+        var result = true;
+        tiles.forEach(
+            function (current) {
+                if (current.x === x && current.y === y &&
+                        current.t.blocking === true) {
+                    result = false;
+                }
+            }
+        );
+        return result;
+    }
+
     exports.canvas = function (opt) {
         for (var k in opt) {
             if (opt.hasOwnProperty(k)) {
@@ -100,6 +126,17 @@ var rl = (function () {
 
         return this;
     };
+
+    // Render any tiles that we're storing to the canvas.
+    // x and y represent the top-left corner of the screen.
+    exports.render = function (x, y) {
+        var tile;
+        for (var i = 0; i < tiles.length; i += 1) {
+            this.style(tiles[i].t.style())
+                .square(tiles[i].x, tiles[i].y)
+        }
+        return this;
+    }
 
     window.addEventListener('keydown', exports.keydown);
 

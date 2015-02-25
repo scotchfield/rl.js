@@ -21,6 +21,7 @@ var game = (function () {
     setup = function () {
         state = 'map';
         resetPlayer();
+        rl.addTile(3, 3);
     },
 
     renderTitle = function () {
@@ -32,6 +33,7 @@ var game = (function () {
     },
     renderGame = function () {
         rl.clear()
+            .render()
             .style(player.style)
             .write(player.c, player.x, player.y);
     },
@@ -44,19 +46,20 @@ var game = (function () {
     },
 
     keydownMap = function keydown(e) {
+        var nx = player.x, ny = player.y;
         if (e.keyCode === 68) {
-            player.x += 1;
+            nx += 1;
         } else if (e.keyCode === 65) {
-            player.x -= 1;
+            nx -= 1;
         } else if (e.keyCode === 83) {
-            player.y += 1;
+            ny += 1;
         } else if (e.keyCode === 87) {
-            player.y -= 1;
+            ny -= 1;
         }
-        player.x = player.x < 0 ? 0 : player.x;
-        player.x = player.x >= width ? width - 1 : player.x;
-        player.y = player.y < 0 ? 0 : player.y;
-        player.y = player.y >= height ? height - 1 : player.y;
+        if (rl.canMoveTo(nx, ny)) {
+            player.x = nx;
+            player.y = ny;
+        }
         render();
     },
     keydownTitle = function keydown(e) {
