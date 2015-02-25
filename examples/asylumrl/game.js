@@ -3,6 +3,16 @@ var game = (function () {
         player, width = 60, height = 35,
         map = {};
 
+    var TileWall = function (colour) {
+        var that = rl.TileBlocking();
+
+        if (colour !== undefined) {
+            that.style = function () { return colour; }
+        }
+
+        return that;
+    };
+
     renderCb.removeCb = function(cb) {
         for (var i = this.length; i >= 0; i -= 1) {
             if (this[i] === cb) {
@@ -22,11 +32,13 @@ var game = (function () {
     setup = function () {
         state = 'map';
         resetPlayer();
-        rl.addTile(3, 3);
+        rl.addTile(3, 3, TileWall('rgb(255,0,0)'))
+            .addTile(3, 5, TileWall('rgb(0,255,0)'))
+            .addTile(3, 7, TileWall('rgb(0,0,255)'));
     },
 
     renderTitle = function () {
-        var opacity = 0.7 + 0.3 * Math.cos((Date.now() % 6290) / 1000);
+        var opacity = 0.8 + 0.2 * Math.cos((Date.now() % 6290) / 1000);
         rl.clear()
             .style('rgba(0,95,191,' + opacity + ')')
                 .write('w', 2, 1)
