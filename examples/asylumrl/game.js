@@ -1,9 +1,30 @@
 var generator = (function () {
-    var exports = {};
+    var exports = {},
+
+    TileAsylumCorridorEnd = {},
+    TileAsylumStaircase = {},
+
+    buildPartitionRooms = function (map, depth, x_split, xa, ya, xb, yb,
+                                    door_right, vars) {
+        door_right = door_right || false;
+        vars = vars || {};
+        vars.rooms = vars.rooms || 0;
+        vars.pages = vars.pages || 0;
+
+        if (depth > 0) {
+            if (x_split) {
+
+            } else {
+
+            }
+        } else {
+
+        }
+    };
 
     exports.generateAsylumMap = function (width, height) {
         var map = [], corridors = [];
-        /*this.buildPartitionRooms(map, 4, true, 0, 0, width, height);
+        buildPartitionRooms(map, 4, true, 0, 0, width, height);
         map.forEach(function(x) {
             if (TileAsylumCorridorEnd === x.token_enum) {
                 corridors.push(x);
@@ -19,13 +40,13 @@ var generator = (function () {
                 map.push({x: obj.x + 1, y: obj.y + 1,
                           t: rl.TileWall('rgb(255,0,0)')});
                 map.push({x: obj.x, y: obj.y,
-                          t: rl.TileAsylumStaircase('rgb(120,120,120)')});
+                          t: TileAsylumStaircase('rgb(120,120,120)')});
             } else {
                 map.push({x: obj.x, y: obj.y,
                           t: rl.TileWall('rgb(255,0,0)')});
             }
         });
-        return map;*/
+        return map;
     };
 
     return exports;
@@ -101,9 +122,9 @@ var game = (function () {
     },
     renderGame = function () {
         rl.clear()
-            .render()
+            .render(player.x - rl.cx(), player.y - rl.cy())
             .style(player.style)
-            .write(player.c, player.x, player.y);
+            .write(player.c, rl.cx(), rl.cy());//player.x, player.y);
     },
     render = function () {
         renderCb.forEach(
@@ -138,6 +159,11 @@ var game = (function () {
             .push(renderGame);
         setup();
         render();
+    },
+
+    generateMaps = function () {
+        // todo: store as map['asylum']['tiles']
+        map['asylum'] = generator.generateAsylumMap(20, 50);
     };
 
     var options = {
@@ -151,6 +177,7 @@ var game = (function () {
     rl.create('game_canvas', options)
         .registerKeydown(keydownTitle);
 
+    generateMaps();
     state = 'title';
     timer = setInterval(renderTitle, 100);
     //renderCb.push(renderTitle);
