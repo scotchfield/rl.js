@@ -140,12 +140,26 @@ var rl = (function () {
     // Render any tiles that we're storing to the canvas.
     // x and y represent the top-left corner of the screen.
     rl.render = function (x, y) {
-        var tile;
-        for (var i = 0; i < tiles.length; i += 1) {
-            this.style(tiles[i].t.style())
-                .square(tiles[i].x, tiles[i].y)
-        }
+        tiles.forEach(
+            function(t) {
+                if (t.x >= x && t.x < x + options.width &&
+                        t.y >= y && t.y < y + options.height) {
+                    rl.style(t.t.style())
+                        .square(t.x - x,
+                                t.y - y);
+                }
+            }
+        );
+
         return this;
+    }
+
+    rl.cx = function () {
+        return Math.floor(options.width / 2);
+    }
+
+    rl.cy = function () {
+        return Math.floor(options.height / 2);
     }
 
     window.addEventListener('keydown', rl.keydown);
