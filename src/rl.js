@@ -1,7 +1,7 @@
 var rl = (function () {
     'use strict';
 
-    var exports = {}, tiles = [],
+    var rl = {}, tiles = [],
         canvas = false, ctx = false,
         keydownCallbacks = [],
 
@@ -16,23 +16,31 @@ var rl = (function () {
         textAlign: 'center',
     };
 
-    exports.TileBlocking = function () {
-        var that = {};
+    rl.TileBlocking = function () {
+        return {
+            c: '#',
+            style: function () { return '#ffffff' },
+            blocking: true,
+        }
+    };
 
-        that.c = '#';
-        that.style = function () { return '#ffffff' };
-        that.blocking = true;
+    rl.TileWall = function (colour) {
+        var that = rl.TileBlocking();
+
+        if (colour !== undefined) {
+            that.style = function () { return colour; }
+        }
 
         return that;
     };
 
-    exports.registerKeydown = function (cb) {
+    rl.registerKeydown = function (cb) {
         keydownCallbacks.push(cb);
 
         return this;
     };
 
-    exports.unregisterKeydown = function (cb) {
+    rl.unregisterKeydown = function (cb) {
         for (var i = keydownCallbacks.length; i >= 0; i -= 1) {
             if (keydownCallbacks[i] === cb) {
                 keydownCallbacks.splice(i, 1);
@@ -42,7 +50,7 @@ var rl = (function () {
         return this;
     };
 
-    exports.keydown = function (e) {
+    rl.keydown = function (e) {
         keydownCallbacks.forEach(
             function(currentValue) {
                 currentValue(e);
@@ -52,20 +60,20 @@ var rl = (function () {
         return this;
     };
 
-    exports.clear = function () {
+    rl.clear = function () {
         ctx.fillStyle = options.backgroundColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         return this;
     };
 
-    exports.style = function (c) {
+    rl.style = function (c) {
         ctx.fillStyle = c;
 
         return this;
     };
 
-    exports.write = function (s, x, y) {
+    rl.write = function (s, x, y) {
         for (var i = 0; i < s.length; i += 1) {
             ctx.fillText(s[i],
                 (x + i + 1) * options.tileWidth - 9,
@@ -75,21 +83,21 @@ var rl = (function () {
         return this;
     };
 
-    exports.square = function (x, y) {
+    rl.square = function (x, y) {
         ctx.fillRect(x * options.tileWidth, y * options.tileHeight,
                      options.tileWidth, options.tileHeight);
 
         return this;
     };
 
-    exports.addTile = function (x, y, t) {
+    rl.addTile = function (x, y, t) {
         var tile = (t === undefined) ? this.TileBlocking() : t;
         tiles.push({x: x, y: y, t: tile});
 
         return this;
     }
 
-    exports.canMoveTo = function (x, y) {
+    rl.canMoveTo = function (x, y) {
         var result = true;
         tiles.forEach(
             function (current) {
@@ -102,7 +110,7 @@ var rl = (function () {
         return result;
     }
 
-    exports.canvas = function (opt) {
+    rl.canvas = function (opt) {
         for (var k in opt) {
             if (opt.hasOwnProperty(k)) {
                 options[k] = opt[k];
@@ -122,7 +130,7 @@ var rl = (function () {
         return canvas;
     };
 
-    exports.create = function (id, options) {
+    rl.create = function (id, options) {
         canvas = this.canvas(options);
         document.getElementById(id).appendChild(canvas);
 
@@ -131,7 +139,7 @@ var rl = (function () {
 
     // Render any tiles that we're storing to the canvas.
     // x and y represent the top-left corner of the screen.
-    exports.render = function (x, y) {
+    rl.render = function (x, y) {
         var tile;
         for (var i = 0; i < tiles.length; i += 1) {
             this.style(tiles[i].t.style())
@@ -140,7 +148,7 @@ var rl = (function () {
         return this;
     }
 
-    window.addEventListener('keydown', exports.keydown);
+    window.addEventListener('keydown', rl.keydown);
 
-    return exports;
+    return rl;
 }());

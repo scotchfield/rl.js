@@ -1,16 +1,6 @@
 var generator = (function () {
     var exports = {};
 
-    exports.TileWall = function (colour) {
-        var that = rl.TileBlocking();
-
-        if (colour !== undefined) {
-            that.style = function () { return colour; }
-        }
-
-        return that;
-    };
-
     exports.generateAsylumMap = function (width, height) {
         var map = [], corridors = [];
         /*this.buildPartitionRooms(map, 4, true, 0, 0, width, height);
@@ -23,16 +13,16 @@ var generator = (function () {
             map.splice(map.indexOf(obj), 1);
             if (obj.token === DirectionSouth) {
                 map.push({x: obj.x - 1, y: obj.y + 1,
-                          t: TileWall('rgb(255,0,0)')});
+                          t: rl.TileWall('rgb(255,0,0)')});
                 map.push({x: obj.x, y: obj.y + 1,
-                          t: TileWall('rgb(255,0,0)')});
+                          t: rl.TileWall('rgb(255,0,0)')});
                 map.push({x: obj.x + 1, y: obj.y + 1,
-                          t: TileWall('rgb(255,0,0)')});
+                          t: rl.TileWall('rgb(255,0,0)')});
                 map.push({x: obj.x, y: obj.y,
-                          t: TileAsylumStaircase('rgb(120,120,120)')});
+                          t: rl.TileAsylumStaircase('rgb(120,120,120)')});
             } else {
                 map.push({x: obj.x, y: obj.y,
-                          t: TileWall('rgb(255,0,0)')});
+                          t: rl.TileWall('rgb(255,0,0)')});
             }
         });
         return map;*/
@@ -65,9 +55,9 @@ var game = (function () {
     setup = function () {
         state = 'map';
         resetPlayer();
-        rl.addTile(3, 3, generator.TileWall('rgb(255,0,0)'))
-            .addTile(3, 5, generator.TileWall('rgb(0,255,0)'))
-            .addTile(3, 7, generator.TileWall('rgb(0,0,255)'));
+        rl.addTile(3, 3, rl.TileWall('rgb(255,0,0)'))
+            .addTile(3, 5, rl.TileWall('rgb(0,255,0)'))
+            .addTile(3, 7, rl.TileWall('rgb(0,0,255)'));
     },
 
     renderTitle = function () {
