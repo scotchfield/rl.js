@@ -1,9 +1,7 @@
-var game = (function () {
-    var canvas, state, renderCb = [], timer,
-        player, width = 60, height = 35,
-        map = {};
+var generator = (function () {
+    var exports = {};
 
-    var TileWall = function (colour) {
+    exports.TileWall = function (colour) {
         var that = rl.TileBlocking();
 
         if (colour !== undefined) {
@@ -12,6 +10,41 @@ var game = (function () {
 
         return that;
     };
+
+    exports.generateAsylumMap = function (width, height) {
+        var map = [], corridors = [];
+        /*this.buildPartitionRooms(map, 4, true, 0, 0, width, height);
+        map.forEach(function(x) {
+            if (TileAsylumCorridorEnd === x.token_enum) {
+                corridors.push(x);
+            }
+        });
+        corridors.forEach(function(obj) {
+            map.splice(map.indexOf(obj), 1);
+            if (obj.token === DirectionSouth) {
+                map.push({x: obj.x - 1, y: obj.y + 1,
+                          t: TileWall('rgb(255,0,0)')});
+                map.push({x: obj.x, y: obj.y + 1,
+                          t: TileWall('rgb(255,0,0)')});
+                map.push({x: obj.x + 1, y: obj.y + 1,
+                          t: TileWall('rgb(255,0,0)')});
+                map.push({x: obj.x, y: obj.y,
+                          t: TileAsylumStaircase('rgb(120,120,120)')});
+            } else {
+                map.push({x: obj.x, y: obj.y,
+                          t: TileWall('rgb(255,0,0)')});
+            }
+        });
+        return map;*/
+    };
+
+    return exports;
+}());
+
+var game = (function () {
+    var canvas, state, renderCb = [], timer,
+        player, width = 60, height = 35,
+        map = {};
 
     renderCb.removeCb = function(cb) {
         for (var i = this.length; i >= 0; i -= 1) {
@@ -32,9 +65,9 @@ var game = (function () {
     setup = function () {
         state = 'map';
         resetPlayer();
-        rl.addTile(3, 3, TileWall('rgb(255,0,0)'))
-            .addTile(3, 5, TileWall('rgb(0,255,0)'))
-            .addTile(3, 7, TileWall('rgb(0,0,255)'));
+        rl.addTile(3, 3, generator.TileWall('rgb(255,0,0)'))
+            .addTile(3, 5, generator.TileWall('rgb(0,255,0)'))
+            .addTile(3, 7, generator.TileWall('rgb(0,0,255)'));
     },
 
     renderTitle = function () {

@@ -1,11 +1,10 @@
 var rl = (function () {
     'use strict';
 
-    var exports = {};
+    var exports = {}, tiles = [],
+        canvas = false, ctx = false,
+        keydownCallbacks = [],
 
-    var tiles = [];
-
-    var canvas = false, ctx = false,
     options = {
         width: 40,
         height: 25,
@@ -15,8 +14,7 @@ var rl = (function () {
         font: '20pt monospace',
         fontFillStyle: '#ffffff',
         textAlign: 'center',
-    },
-    keydownCallbacks = [];
+    };
 
     exports.TileBlocking = function () {
         var that = {};
