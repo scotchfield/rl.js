@@ -21,6 +21,9 @@ var rl = (function () {
             c: '#',
             style: function () { return '#ffffff' },
             blocking: true,
+            render: function (x, y) {
+                rl.style(this.style()).square(x, y);
+            }
         }
     };
 
@@ -144,9 +147,7 @@ var rl = (function () {
             function(t) {
                 if (t.x >= x && t.x < x + options.width &&
                         t.y >= y && t.y < y + options.height) {
-                    rl.style(t.t.style())
-                        .square(t.x - x,
-                                t.y - y);
+                    t.t.render(t.x - x, t.y - y);
                 }
             }
         );
