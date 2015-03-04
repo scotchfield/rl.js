@@ -5,6 +5,8 @@ var rl = (function () {
         canvas = false, ctx = false,
         keydownCallbacks = [],
 
+    images = {},
+
     options = {
         width: 40,
         height: 25,
@@ -36,6 +38,36 @@ var rl = (function () {
 
         return that;
     };
+
+    rl.TileImg = function (image_id, x, y, width, height) {
+        var that = rl.TileBlocking();
+
+        that.image_id = image_id;
+        that.image_x = x;
+        that.image_y = y;
+        that.image_w = width;
+        that.image_h = height;
+
+        that.render = function (x, y) {
+            if (images[image_id] !== undefined) {
+                ctx.drawImage(images[image_id],
+                              that.image_x, that.image_y,
+                              that.image_w, that.image_h,
+                              x * options.tileWidth, y * options.tileHeight,
+                              options.tileWidth, options.tileHeight);
+            }
+        };
+
+        return that;
+    };
+
+    rl.TileImgNoBlock = function (image_id, x, y, width, height) {
+        var that = rl.TileImg(image_id, x, y, width, height);
+
+        that.blocking = false;
+
+        return that;
+    }
 
     rl.registerKeydown = function (cb) {
         keydownCallbacks.push(cb);
@@ -153,15 +185,25 @@ var rl = (function () {
         );
 
         return this;
-    }
+    };
 
     rl.cx = function () {
         return Math.floor(options.width / 2);
-    }
+    };
 
     rl.cy = function () {
         return Math.floor(options.height / 2);
-    }
+    };
+
+    rl.loadImage = function (name, id) {
+        var image = new Image();
+        image.src = name;
+        image.onload = function () {
+            images[id] = this;
+        };
+
+        return this;
+    };
 
     window.addEventListener('keydown', rl.keydown);
 
