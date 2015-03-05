@@ -195,11 +195,14 @@ var rl = (function () {
         return Math.floor(options.height / 2);
     };
 
-    rl.loadImage = function (name, id) {
+    rl.loadImage = function (name, id, cb) {
         var image = new Image();
         image.src = name;
         image.onload = function () {
             images[id] = this;
+            if (cb !== undefined) {
+                cb();
+            }
         };
 
         return this;

@@ -62,7 +62,7 @@ var game = (function () {
 
     rl.create('game_canvas', options)
         .registerKeydown(keydownMap)
-        .loadImage('oryx_tiles.png', 'oryx');
+        .loadImage('oryx_tiles.png', 'oryx', render);
 
     setup();
     render();
