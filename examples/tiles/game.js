@@ -66,9 +66,4 @@ var game = (function () {
 
     setup();
     render();
-
-    // todo: only proceed when we've loaded all the tile images
-    // right now, loading the png happens slower than the call to render
-    // possibly allow a loading state that finishes when the images object
-    //  has a certain number of elements
 }());
