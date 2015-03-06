@@ -35,14 +35,14 @@ var rl = (function () {
     // The object returned from rl.TileBlocking can be used as a template
     // for new blocking tiles (see TileWall for an example).
     rl.TileBlocking = function () {
-        return {
-            c: '#',
-            style: function () { return '#ffffff' },
-            blocking: true,
-            render: function (x, y) {
-                rl.style(this.style()).square(x, y);
-            }
+        if (!(this instanceof rl.TileBlocking)) {
+            return new rl.TileBlocking();
         }
+    };
+    rl.TileBlocking.prototype.style = function () { return '#ffffff' };
+    rl.TileBlocking.prototype.blocking = true;
+    rl.TileBlocking.prototype.render = function (x, y) {
+        rl.style(this.style()).square(x, y);
     };
 
     // By using TileBlocking as a template and modifying the style
