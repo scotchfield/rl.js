@@ -1,3 +1,5 @@
+// rl.js: A JavaScript library to build browser-based roguelikes.
+
 var rl = (function () {
     'use strict';
 
@@ -7,6 +9,9 @@ var rl = (function () {
 
     images = {},
 
+    // A collection of options can be passed to create. These options are
+    // used to specify the width and height (in tiles) of the new canvas,
+    // the tile size, and so on. The defaults are listed here.
     options = {
         width: 40,
         height: 25,
@@ -18,6 +23,16 @@ var rl = (function () {
         textAlign: 'center',
     };
 
+    // Tiles are represented as objects, and have two primary properties:
+    // render and blocking. The render property identifies a function that
+    // draws the tile to the specified (x, y) location. The blocking
+    // property is used to prevent movement.
+
+    // todo: need another property to block movement but allow light/sight.
+
+    // A solid white square that blocks typical character movement.
+    // The object returned from rl.TileBlocking can be used as a template
+    // for new blocking tiles (see TileWall for an example).
     rl.TileBlocking = function () {
         return {
             c: '#',
@@ -29,6 +44,8 @@ var rl = (function () {
         }
     };
 
+    // By using TileBlocking as a template and modifying the style
+    // property, we can enable simple coloured walls.
     rl.TileWall = function (colour) {
         var that = rl.TileBlocking();
 
@@ -39,6 +56,11 @@ var rl = (function () {
         return that;
     };
 
+    // Since we can cache images using rl.js, we can use TileBlocking as a
+    // template and render images instead of blank squares.
+    // image_id: the key associated with the cached image
+    // (x, y): the (x, y) coordinates in image_id where the tile begins
+    // (width, height): the size of the source tile in image_id
     rl.TileImg = function (image_id, x, y, width, height) {
         var that = rl.TileBlocking();
 
@@ -61,6 +83,8 @@ var rl = (function () {
         return that;
     };
 
+    // Just like TileImg, but toggle the blocking parameter so that
+    // characters can walk over the square (for example, a dirt or grass tile).
     rl.TileImgNoBlock = function (image_id, x, y, width, height) {
         var that = rl.TileImg(image_id, x, y, width, height);
 
