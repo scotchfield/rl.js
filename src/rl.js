@@ -96,12 +96,16 @@ var rl = (function () {
         return that;
     }
 
+    // Keypresses are caught by rl.js and forwarded to callbacks. Register
+    // a callback in the game code, and each time a key is pressed, your
+    // function(s) will be called with the appropriate event.
     rl.registerKeydown = function (cb) {
         keydown_callbacks.push(cb);
 
         return this;
     };
 
+    // Remove a callback from the keypress array.
     rl.unregisterKeydown = function (cb) {
         for (var i = keydown_callbacks.length; i >= 0; i -= 1) {
             if (keydown_callbacks[i] === cb) {
@@ -112,6 +116,9 @@ var rl = (function () {
         return this;
     };
 
+    // The actual callback used by rl.js to catch keypresses. Each time an
+    // event occurs, iterate through the list of user-specified callbacks,
+    // and pass the event.
     rl.keydown = function (e) {
         keydown_callbacks.forEach(
             function(current) {
@@ -122,20 +129,26 @@ var rl = (function () {
         return this;
     };
 
+    // Clear the canvas using the style specified in options.
     rl.clear = function () {
-        ctx.fillStyle = options.backgroundColor;
+        rl.style(options.backgroundColor);
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = options.foregroundColor;
+        rl.style(options.foregroundColor);
 
         return this;
     };
 
+    // Set the active style when drawing to the canvas. This might be a
+    // hex colour code, rgb/rgba value, or other style information.
     rl.style = function (c) {
         ctx.fillStyle = c;
 
         return this;
     };
 
+    // Draw a string to the canvas at the specified (x, y) tile positions.
+    // For example, rl.style('#ffffff').write('Hello', 0, 0) will write the
+    // 'Hello' string in white letters in the top-left corner.
     rl.write = function (s, x, y) {
         for (var i = 0; i < s.length; i += 1) {
             ctx.fillText(s[i],
