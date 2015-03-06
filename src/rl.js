@@ -19,6 +19,7 @@ var rl = (function () {
         tileWidth: 24,
         tileHeight: 24,
         backgroundColor: '#000000',
+        foregroundColor: '#ffffff',
         font: '20pt monospace',
         fontFillStyle: '#ffffff',
         textAlign: 'center',
@@ -123,6 +124,7 @@ var rl = (function () {
     rl.clear = function () {
         ctx.fillStyle = options.backgroundColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = options.foregroundColor;
 
         return this;
     };

@@ -7,7 +7,6 @@ A JavaScript library to build browser-based roguelikes.
     <script src="../src/rl.js" type="text/javascript"></script>
     <script type="text/javascript">
     rl.create('game_canvas')
-        .style('#ffffff')
         .write('Hello World!', 0, 0);
     </script>
     </body></html>
