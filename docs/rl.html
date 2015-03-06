@@ -343,23 +343,97 @@ For example, rl.style(‘#ffffff’).write(‘Hello’, 0, 0) will write the
         }
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Draw a single square at the screen tile position indicated by (x, y).
+Uses the last specified style().</p>
 
-    rl.square = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.square = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
         ctx.fillRect(x * options.tileWidth, y * options.tileHeight,
                      options.tileWidth, options.tileHeight);
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>rl.js retains a list of tiles that it will render when asked.
+These are also used to calculate blocking, visibility, and other
+qualities.</p>
 
-    rl.addTile = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, t)</span> </span>{
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Add a tile object at global position (x, y) to the internal tiles array.
+If no tile is specified, use a TileBlocking object by default.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>One important distinction is that tiles are specified by a world
+(x, y) position when instantiated. For example, a blocking wall
+may be created as rl.addTile(0, 0). This doesn’t mean that the wall
+is always rendered at (0, 0). Drawing tiles later may map this to
+a relative position (if the player is at (1, 1) and is centered on
+the canvas, the wall will also appear near the center).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.addTile = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, t)</span> </span>{
         <span class="hljs-keyword">var</span> tile = (t === <span class="hljs-literal">undefined</span>) ? <span class="hljs-keyword">this</span>.TileBlocking() : t;
         tiles.push({x: x, y: y, t: tile});
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Check to see if the square at (x, y) contains a blocking tile.</p>
 
-    rl.canMoveTo = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.canMoveTo = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
         <span class="hljs-keyword">var</span> result = <span class="hljs-literal">true</span>;
         tiles.forEach(
             <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(current)</span> </span>{
@@ -370,9 +444,24 @@ For example, rl.style(‘#ffffff’).write(‘Hello’, 0, 0) will write the
             }
         );
         <span class="hljs-keyword">return</span> result;
-    }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Append the default list of options with any user-specified options.
+Next, create a new canvas object and clear it. This is an internal
+function called by create.</p>
 
-    rl.canvas = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(opt)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.canvas = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(opt)</span> </span>{
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k <span class="hljs-keyword">in</span> opt) {
             <span class="hljs-keyword">if</span> (opt.hasOwnProperty(k)) {
                 options[k] = opt[k];
@@ -390,9 +479,24 @@ For example, rl.style(‘#ffffff’).write(‘Hello’, 0, 0) will write the
         ctx.textAlign = options.textAlign;
 
         <span class="hljs-keyword">return</span> canvas;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Creates a new canvas object and appends it to the DOM element specified
+by the id argument.
+This is the only rl.js function that must be in your game code!</p>
 
-    rl.create = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(id, options)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.create = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(id, options)</span> </span>{
         canvas = <span class="hljs-keyword">this</span>.canvas(options);
         <span class="hljs-built_in">document</span>.getElementById(id).appendChild(canvas);
 
@@ -402,11 +506,11 @@ For example, rl.style(‘#ffffff’).write(‘Hello’, 0, 0) will write the
         </li>
         
         
-        <li id="section-15">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>Render any tiles that we’re storing to the canvas.
 x and y represent the top-left corner of the screen.</p>
@@ -422,17 +526,60 @@ x and y represent the top-left corner of the screen.</p>
         });
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Return the tile x-index at the center of the screen.</p>
 
-    rl.cx = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.cx = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(options.width / <span class="hljs-number">2</span>);
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Return the tile y-index at the center of the screen.</p>
 
-    rl.cy = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.cy = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(options.height / <span class="hljs-number">2</span>);
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Load an image from an external source (a .png file containing tiles,
+for example) and cache it inside rl.js. Must specify an id to access
+it later, and an optional callback when the file is loaded.
+This is an asynchronous call, so please note that the image is not
+available immediately!</p>
 
-    rl.loadImage = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(name, id, cb)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.loadImage = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(name, id, cb)</span> </span>{
         <span class="hljs-keyword">var</span> image = <span class="hljs-keyword">new</span> Image();
         image.src = name;
         image.onload = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{

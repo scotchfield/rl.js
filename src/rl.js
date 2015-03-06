@@ -159,6 +159,8 @@ var rl = (function () {
         return this;
     };
 
+    // Draw a single square at the screen tile position indicated by (x, y).
+    // Uses the last specified style().
     rl.square = function (x, y) {
         ctx.fillRect(x * options.tileWidth, y * options.tileHeight,
                      options.tileWidth, options.tileHeight);
@@ -166,6 +168,19 @@ var rl = (function () {
         return this;
     };
 
+    // rl.js retains a list of tiles that it will render when asked.
+    // These are also used to calculate blocking, visibility, and other
+    // qualities.
+
+    // Add a tile object at global position (x, y) to the internal tiles array.
+    // If no tile is specified, use a TileBlocking object by default.
+
+    // One important distinction is that tiles are specified by a world
+    // (x, y) position when instantiated. For example, a blocking wall
+    // may be created as rl.addTile(0, 0). This doesn't mean that the wall
+    // is always rendered at (0, 0). Drawing tiles later may map this to
+    // a relative position (if the player is at (1, 1) and is centered on
+    // the canvas, the wall will also appear near the center).
     rl.addTile = function (x, y, t) {
         var tile = (t === undefined) ? this.TileBlocking() : t;
         tiles.push({x: x, y: y, t: tile});
@@ -173,6 +188,7 @@ var rl = (function () {
         return this;
     }
 
+    // Check to see if the square at (x, y) contains a blocking tile.
     rl.canMoveTo = function (x, y) {
         var result = true;
         tiles.forEach(
@@ -186,6 +202,9 @@ var rl = (function () {
         return result;
     }
 
+    // Append the default list of options with any user-specified options.
+    // Next, create a new canvas object and clear it. This is an internal
+    // function called by create.
     rl.canvas = function (opt) {
         for (var k in opt) {
             if (opt.hasOwnProperty(k)) {
@@ -206,6 +225,9 @@ var rl = (function () {
         return canvas;
     };
 
+    // Creates a new canvas object and appends it to the DOM element specified
+    // by the id argument.
+    // This is the only rl.js function that must be in your game code!
     rl.create = function (id, options) {
         canvas = this.canvas(options);
         document.getElementById(id).appendChild(canvas);
@@ -226,14 +248,21 @@ var rl = (function () {
         return this;
     };
 
+    // Return the tile x-index at the center of the screen.
     rl.cx = function () {
         return Math.floor(options.width / 2);
     };
 
+    // Return the tile y-index at the center of the screen.
     rl.cy = function () {
         return Math.floor(options.height / 2);
     };
 
+    // Load an image from an external source (a .png file containing tiles,
+    // for example) and cache it inside rl.js. Must specify an id to access
+    // it later, and an optional callback when the file is loaded.
+    // This is an asynchronous call, so please note that the image is not
+    // available immediately!
     rl.loadImage = function (name, id, cb) {
         var image = new Image();
         image.src = name;
