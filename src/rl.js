@@ -6,6 +6,7 @@ var rl = (function () {
     var rl = {}, tiles = [],
         canvas = false, ctx = false,
         keydownCallbacks = [],
+        blocking = {},
 
     images = {},
 
@@ -199,14 +200,12 @@ var rl = (function () {
     // Render any tiles that we're storing to the canvas.
     // x and y represent the top-left corner of the screen.
     rl.render = function (x, y) {
-        tiles.forEach(
-            function(t) {
-                if (t.x >= x && t.x < x + options.width &&
-                        t.y >= y && t.y < y + options.height) {
-                    t.t.render(t.x - x, t.y - y);
-                }
+        tiles.forEach(function (t) {
+            if (t.x >= x && t.x < x + options.width &&
+                    t.y >= y && t.y < y + options.height) {
+                t.t.render(t.x - x, t.y - y);
             }
-        );
+        });
 
         return this;
     };
@@ -231,6 +230,19 @@ var rl = (function () {
 
         return this;
     };
+
+    rl.updateBlocking = function () {
+        blocking = {};
+
+        tiles.forEach(function (t) {
+            if (t.t.blocking === true) {
+                blocking[t.x] = blocking[t.x] || {};
+                blocking[t.x][t.y] = true;
+            }
+        });
+
+        return this;
+    }
 
     window.addEventListener('keydown', rl.keydown);
 
