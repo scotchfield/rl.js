@@ -1,3 +1,9 @@
+var generator = (function () {
+    var exports = {};
+
+    return exports;
+}());
+
 var game = (function () {
     var canvas, state, renderCb = [],
         player, width = 40, height = 25;
@@ -39,7 +45,8 @@ var game = (function () {
             .write('press a key to continue', 1, 2);
     },
     renderGame = function () {
-        rl.clear()
+        rl.updateTilesIndex()
+            .clear()
             .render(player.x - rl.cx(), player.y - rl.cy())
             .style(player.style)
             .write(player.c, rl.cx(), rl.cy());

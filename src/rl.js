@@ -5,7 +5,8 @@ var rl = (function () {
 
     var rl = {}, tiles = [],
         canvas = false, ctx = false,
-        keydownCallbacks = [],
+        keydown_callbacks = [],
+        tiles_index = {},
         blocking = {},
 
     images = {},
@@ -96,15 +97,15 @@ var rl = (function () {
     }
 
     rl.registerKeydown = function (cb) {
-        keydownCallbacks.push(cb);
+        keydown_callbacks.push(cb);
 
         return this;
     };
 
     rl.unregisterKeydown = function (cb) {
-        for (var i = keydownCallbacks.length; i >= 0; i -= 1) {
-            if (keydownCallbacks[i] === cb) {
-                keydownCallbacks.splice(i, 1);
+        for (var i = keydown_callbacks.length; i >= 0; i -= 1) {
+            if (keydown_callbacks[i] === cb) {
+                keydown_callbacks.splice(i, 1);
             }
         }
 
@@ -112,9 +113,9 @@ var rl = (function () {
     };
 
     rl.keydown = function (e) {
-        keydownCallbacks.forEach(
-            function(currentValue) {
-                currentValue(e);
+        keydown_callbacks.forEach(
+            function(current) {
+                current(e);
             }
         );
 
@@ -241,6 +242,18 @@ var rl = (function () {
                 blocking[t.x] = blocking[t.x] || {};
                 blocking[t.x][t.y] = true;
             }
+        });
+
+        return this;
+    }
+
+    rl.updateTilesIndex = function () {
+        tiles_index = {};
+
+        tiles.forEach(function (t) {
+            tiles_index[t.x] = tiles_index[t.x] || {}
+            tiles_index[t.x][t.y] = tiles_index[t.x][t.y] || [];
+            tiles_index[t.x][t.y].push(t.t);
         });
 
         return this;
