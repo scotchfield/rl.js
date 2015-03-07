@@ -24,6 +24,52 @@ var rl = (function () {
         font: '20pt monospace',
         fontFillStyle: '#ffffff',
         textAlign: 'center',
+        imageSmoothingEnabled: false,
+    };
+
+    // Note: These are only catching the keyCode, so they won't identify
+    // any capital or control characters.
+    rl.key = {
+        left: 37,
+        up: 38,
+        right: 39,
+        down: 40,
+        0: 48,
+        1: 49,
+        2: 50,
+        3: 51,
+        4: 52,
+        5: 53,
+        6: 54,
+        7: 55,
+        8: 56,
+        9: 57,
+        a: 65,
+        b: 66,
+        c: 67,
+        d: 68,
+        e: 69,
+        f: 70,
+        g: 71,
+        h: 72,
+        i: 73,
+        j: 74,
+        k: 75,
+        l: 76,
+        m: 77,
+        n: 78,
+        o: 79,
+        p: 80,
+        q: 81,
+        r: 82,
+        s: 83,
+        t: 84,
+        u: 85,
+        v: 86,
+        w: 87,
+        x: 88,
+        y: 89,
+        z: 90,
     };
 
     // Tiles are represented as objects, and have two primary properties:
@@ -86,6 +132,29 @@ var rl = (function () {
         return that;
     };
 
+    rl.TileImgFull = function (image_id, x, y, width, height, scale) {
+        var that = rl.TileBlocking();
+
+        that.image_id = image_id;
+        that.image_x = x;
+        that.image_y = y;
+        that.image_w = width;
+        that.image_h = height;
+        that.scale = scale;
+
+        that.render = function (x, y) {
+            if (images[image_id] !== undefined) {
+                ctx.drawImage(images[image_id],
+                              that.image_x, that.image_y,
+                              that.image_w, that.image_h,
+                              x * options.tileWidth, y * options.tileHeight,
+                              that.image_w * scale, that.image_h * scale);
+            }
+        };
+
+        return that;
+    };
+
     // Just like TileImg, but toggle the blocking parameter so that
     // characters can walk over the square (for example, a dirt or grass tile).
     rl.TileImgNoBlock = function (image_id, x, y, width, height) {
@@ -94,7 +163,17 @@ var rl = (function () {
         that.blocking = false;
 
         return that;
-    }
+    };
+
+    // An invisible tile to hold the player's entry point in a map.
+    // Note: this is not the only way to handle player entry, but it
+    // shows one way to hide information in the tiles.
+    rl.TilePlayerSpawn = function () {
+        if (!(this instanceof rl.TilePlayerSpawn)) {
+            return new rl.TilePlayerSpawn();
+        }
+    };
+    rl.TilePlayerSpawn.prototype.render = function (x, y) {}
 
     // Keypresses are caught by rl.js and forwarded to callbacks. Register
     // a callback in the game code, and each time a key is pressed, your
@@ -186,7 +265,7 @@ var rl = (function () {
         tiles.push({x: x, y: y, t: tile});
 
         return this;
-    }
+    };
 
     // Check to see if the square at (x, y) contains a blocking tile.
     rl.canMoveTo = function (x, y) {
@@ -200,7 +279,7 @@ var rl = (function () {
             }
         );
         return result;
-    }
+    };
 
     // Append the default list of options with any user-specified options.
     // Next, create a new canvas object and clear it. This is an internal
@@ -221,6 +300,11 @@ var rl = (function () {
 
         ctx.font = options.font;
         ctx.textAlign = options.textAlign;
+
+        ctx.imageSmoothingEnabled = options.imageSmoothingEnabled;
+        ctx.mozImageSmoothingEnabled = options.imageSmoothingEnabled;
+        ctx.oImageSmoothingEnabled = options.imageSmoothingEnabled;
+        ctx.webkitImageSmoothingEnabled = options.imageSmoothingEnabled;
 
         return canvas;
     };
@@ -287,7 +371,7 @@ var rl = (function () {
         });
 
         return this;
-    }
+    };
 
     rl.updateTilesIndex = function () {
         tiles_index = {};
@@ -297,6 +381,21 @@ var rl = (function () {
             tiles_index[t.x][t.y] = tiles_index[t.x][t.y] || [];
             tiles_index[t.x][t.y].push(t.t);
         });
+
+        return this;
+    };
+
+    rl.getKey = function (e) {
+        // todo: actually check for shift/control and return different
+        // keys if necessary
+        return e.keyCode;
+    };
+
+    rl.setTiles = function (new_tiles) {
+        tiles = new_tiles;
+
+        rl.updateBlocking()
+            .updateTilesIndex();
 
         return this;
     }
