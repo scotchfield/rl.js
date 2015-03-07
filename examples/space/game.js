@@ -2,13 +2,18 @@ var generator = (function () {
     var exports = {},
 
     TileElevator = function () {
-        return rl.TileImg('floors', 32, 24, 8, 8);
+        return rl.TileImgNoBlock('floors', 32, 24, 8, 8);
+    },
+    TileSquare = function () {
+        return rl.TileImg('floors', 32, 8, 8, 8);
     };
 
     exports.generateShipUpper = function () {
         var tiles = [];
 
-        tiles.push({x: 1, y: 1, t: TileElevator()});
+        tiles.push({x: 0, y: 1, t: TileElevator()});
+        tiles.push({x: -1, y: 1, t: TileSquare()});
+        tiles.push({x: 1, y: 1, t: TileSquare()});
 
         return tiles;
     };

@@ -302,9 +302,6 @@ var rl = (function () {
         ctx.textAlign = options.textAlign;
 
         ctx.imageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.mozImageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.oImageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.webkitImageSmoothingEnabled = options.imageSmoothingEnabled;
 
         return canvas;
     };
