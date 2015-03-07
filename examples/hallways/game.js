@@ -25,16 +25,16 @@ var game = (function () {
     },
 
     setup = function () {
+        var i, j, x = 20;
+
         state = 'map';
         resetPlayer();
-        rl.addTile(1, 1, rl.TileImg('stone', 0, 0, 8, 8))
-            .addTile(2, 1, rl.TileImg('stone', 8, 0, 8, 8))
-            .addTile(3, 1, rl.TileImg('stone', 16, 0, 8, 8))
-            .addTile(4, 1, rl.TileImg('stone', 24, 0, 8, 8))
-            .addTile(5, 1, rl.TileImg('stone', 32, 0, 8, 8))
-            .addTile(6, 1, rl.TileImg('stone', 40, 0, 8, 8))
-            .addTile(7, 1, rl.TileImg('stone', 48, 0, 8, 8))
-            .addTile(8, 1, rl.TileImg('stone', 56, 0, 8, 8));
+
+        for (i = -x; i < x; i += 1) {
+            for (j = -x; j < x; j += 1) {
+                rl.addTile(i, j, rl.TileImgNoBlock('stone', 24, 0, 8, 8));
+            }
+        }
     },
 
     renderTitle = function () {
