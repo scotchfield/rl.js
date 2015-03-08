@@ -411,6 +411,32 @@ var rl = (function () {
         return options.height * options.tileHeight;
     };
 
+    rl.tilesAt = function (x, y, tile_array) {
+        var tile_return = [];
+
+        tile_array = tile_array || tiles;
+
+        tile_array.forEach(function (tile) {
+            if (tile.x === x && tile.y === y) {
+                tile_return.push(tile);
+            }
+        });
+
+        return tile_return;
+    };
+
+    rl.removeTilesAt = function (x, y, tile_array) {
+        var i;
+
+        tile_array = tile_array || tiles;
+
+        for (i = tile_array.length - 1; i >= 0; i -= 1) {
+            if (tile_array[i].x === x && tile_array[i].y === y) {
+                tile_array.splice(i, 1);
+            }
+        }
+    };
+
     window.addEventListener('keydown', rl.keydown);
 
     return rl;

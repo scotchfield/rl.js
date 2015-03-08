@@ -2,13 +2,31 @@ var generator = (function () {
     var exports = {},
 
     TileElevator = function () {
-        return rl.TileImgNoBlock('floors', 32, 24, 8, 8);
+        return rl.TileImgNoBlock('floors', 16, 0, 8, 8);
     },
     TileSquare = function () {
         return rl.TileImg('floors', 32, 8, 8, 8);
     },
     TileGroundBlue = function () {
         return rl.TileImgNoBlock('floors', 0, 48, 8, 8);
+    },
+    TileWallTopLeft = function () {
+        return rl.TileImg('floors', 0, 0, 8, 8);
+    },
+    TileWallTopRight = function () {
+        return rl.TileImg('floors', 0, 8, 8, 8);
+    },
+    TileWallBottomLeft = function () {
+        return rl.TileImg('floors', 0, 24, 8, 8);
+    },
+    TileWallBottomRight = function () {
+        return rl.TileImg('floors', 0, 16, 8, 8);
+    },
+    TileWallHorizontal = function () {
+        return rl.TileImg('floors', 32, 0, 8, 8);
+    },
+    TileWallVertical = function () {
+        return rl.TileImg('floors', 32, 24, 8, 8);
     },
 
     generateShipUpperRoomUp = function (tiles, options, x, y) {
@@ -18,15 +36,45 @@ var generator = (function () {
 
     },
     generateShipUpperHallway = function (tiles, options, x, y) {
-        tiles.push({x: x, y: y, t: TileSquare()});
+        var i;
+console.log(options);
+        //tiles.push({x: x, y: y, t: TileSquare()});
     },
     generateShipUpperQuad = function (tiles, options, x, y) {
-        var i;
+        var i,
+            i_min = -options.room_width * 2,
+            i_max = options.room_width * 2;
 
-        for (i = -options.room_width * 2;
-             i < options.room_width * 2;
-             i += 1) {
-            tiles.push({x: i, y: 0, t: TileGroundBlue()});
+        for (i = i_min; i <= i_max; i += 1) {
+            rl.removeTilesAt(i, y - 1, tiles);
+            rl.removeTilesAt(i, y, tiles);
+            rl.removeTilesAt(i, y + 1, tiles);
+
+            if (i === -1) {
+                tiles.push({x: i, y: y - 1, t: TileWallBottomRight()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallTopRight()});
+            } else if (i === 0) {
+                tiles.push({x: i, y: y - 1, t: TileGroundBlue()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileGroundBlue()});
+            } else if (i === 1) {
+                tiles.push({x: i, y: y - 1, t: TileWallBottomLeft()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallTopLeft()});
+            } else if (i === i_min) {
+                tiles.push({x: i, y: y - 1, t: TileWallTopLeft()});
+                tiles.push({x: i, y: y, t: TileWallVertical()});
+                tiles.push({x: i, y: y + 1, t: TileWallBottomLeft()});
+            } else if (i === i_max) {
+                tiles.push({x: i, y: y - 1, t: TileWallTopRight()});
+                tiles.push({x: i, y: y, t: TileWallVertical()});
+                tiles.push({x: i, y: y + 1, t: TileWallBottomRight()});
+            } else {
+                tiles.push({x: i, y: y - 1, t: TileWallHorizontal()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallHorizontal()});
+            }
         };
 
         generateShipUpperHallway(tiles, options, -(options.room_width + 1), y);
@@ -34,16 +82,29 @@ var generator = (function () {
     };
 
     exports.generateShipUpper = function () {
-        var tiles = [], options = {}, i;
+        var tiles = [], options = {}, i, i_min, i_max;
 
         options.room_width = 5;
         options.room_height = Math.floor((Math.random() * 5) + 5);
         options.room_hall_count = Math.floor((Math.random() * 3) + 2);
 
-        for (i = -options.room_height * 2;
-             i < options.room_height * 2;
-             i += 1) {
-            tiles.push({x: 0, y: i, t: TileGroundBlue()});
+        i_min = -options.room_height * 2;
+        i_max = options.room_height * 2;
+
+        for (i = i_min; i <= i_max; i += 1) {
+            if (i === i_min) {
+                tiles.push({x: -1, y: i, t: TileWallTopLeft()});
+                tiles.push({x: 0, y: i, t: TileElevator()});
+                tiles.push({x: 1, y: i, t: TileWallTopRight()});
+            } else if (i === i_max) {
+                tiles.push({x: -1, y: i, t: TileWallBottomLeft()});
+                tiles.push({x: 0, y: i, t: TileWallHorizontal()});
+                tiles.push({x: 1, y: i, t: TileWallBottomRight()});
+            } else {
+                tiles.push({x: -1, y: i, t: TileWallVertical()});
+                tiles.push({x: 0, y: i, t: TileGroundBlue()});
+                tiles.push({x: 1, y: i, t: TileWallVertical()});
+            }
         }
 
         generateShipUpperQuad(tiles, options, 0, -(options.room_height + 1));
@@ -207,7 +268,6 @@ var game = (function () {
             .registerKeydown(keydownMap);
         render_cb.removeCb(renderInstructions)
             .push(renderGame);
-        setup();
         render();
     };
 
