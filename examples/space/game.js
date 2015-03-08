@@ -22,11 +22,21 @@ var generator = (function () {
 }());
 
 var game = (function () {
-    var canvas, state, renderCb = [],
-        player, width = 60, height = 40,
-        map = {}, tiles = {};
+    var canvas, state, render_cb = [],
+        stars = [], star_timer,
+        player, width = 40, height = 40,
+        map = {}, tiles = {},
 
-    renderCb.removeCb = function(cb) {
+    options = {
+        font: '14pt monospace',
+        tileWidth: 16,
+        tileHeight: 16,
+        width: width,
+        height: height,
+    };
+
+
+    render_cb.removeCb = function(cb) {
         for (var i = this.length; i >= 0; i -= 1) {
             if (this[i] === cb) {
                 this.splice(i, 1);
@@ -43,11 +53,44 @@ var game = (function () {
     },
 
     loadImagePlanet = function () {
-        rl.addTile(40, 20, rl.TileImgFull('planet', 0, 0, 36, 36, 4));
+        rl.addTile(24, 24, rl.TileImgFull('planet', 0, 0, 36, 36, 4));
         render();
     },
     loadImageFloors = function () {
 
+    },
+
+    initStars = function () {
+        var i;
+        for (i = 0; i < 100; i += 1) {
+            stars.push({
+                x: Math.random() * rl.canvasWidth(),
+                y: Math.random() * rl.canvasHeight(),
+                s: 0.2 + 0.8 * Math.random(),
+            });
+        };
+        star_timer = setInterval(updateStars, 100);
+    },
+    updateStars = function () {
+        stars.forEach(function (star) {
+            star.x += star.s;
+            star.y += star.s;
+            if (star.x >= rl.canvasWidth()) {
+                star.x = 0;
+                star.y = Math.random() * rl.canvasHeight();
+            } else if (star.y >= rl.canvasHeight()) {
+                star.x = Math.random() * rl.canvasWidth();
+                star.y = 0;
+            }
+        });
+        renderTitle();
+    },
+    renderStars = function () {
+        stars.forEach(function (star) {
+            var col = Math.round(255 * star.s);
+            rl.style('rgb(' + col + ',' + col + ',' + col + ')')
+                .fillRect(Math.round(star.x), Math.round(star.y), 5, 5);
+        });
     },
 
     setup = function () {
@@ -61,8 +104,9 @@ var game = (function () {
     },
 
     renderTitle = function () {
-        rl.clear()
-            .render(0, 0)
+        rl.clear();
+        renderStars();
+        rl.render(0, 0)
             .style('#ffffff')
             .write('spaceRL', 1, 1)
             .style('#cccccc')
@@ -83,7 +127,7 @@ var game = (function () {
             .write(player.c, rl.cx(), rl.cy());
     },
     render = function () {
-        renderCb.forEach(
+        render_cb.forEach(
             function (cb) {
                 cb();
             }
@@ -111,7 +155,7 @@ var game = (function () {
         rl.setTiles([])
             .unregisterKeydown(keydown)
             .registerKeydown(keydownInstructions);
-        renderCb.removeCb(renderTitle)
+        render_cb.removeCb(renderTitle)
             .push(renderInstructions);
         setup();
         render();
@@ -119,19 +163,10 @@ var game = (function () {
     keydownInstructions = function keydown(e) {
         rl.unregisterKeydown(keydown)
             .registerKeydown(keydownMap);
-        renderCb.removeCb(renderInstructions)
+        render_cb.removeCb(renderInstructions)
             .push(renderGame);
         setup();
         render();
-    };
-
-
-    var options = {
-        font: '14pt monospace',
-        tileWidth: 16,
-        tileHeight: 16,
-        width: width,
-        height: height,
     };
 
     rl.create('game_canvas', options)
@@ -139,7 +174,8 @@ var game = (function () {
         .loadImage('oryx_floors.png', 'floors', loadImageFloors)
         .registerKeydown(keydownTitle);
 
+    initStars();
     state = 'title';
-    renderCb.push(renderTitle);
+    render_cb.push(renderTitle);
     render();
 }());

@@ -395,7 +395,21 @@ var rl = (function () {
             .updateTilesIndex();
 
         return this;
-    }
+    };
+
+    rl.fillRect = function (x, y, width, height) {
+        ctx.fillRect(x, y, width, height);
+
+        return this;
+    };
+
+    rl.canvasWidth = function () {
+        return options.width * options.tileWidth;
+    };
+
+    rl.canvasHeight = function () {
+        return options.height * options.tileHeight;
+    };
 
     window.addEventListener('keydown', rl.keydown);
 
