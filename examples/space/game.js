@@ -6,14 +6,48 @@ var generator = (function () {
     },
     TileSquare = function () {
         return rl.TileImg('floors', 32, 8, 8, 8);
+    },
+    TileGroundBlue = function () {
+        return rl.TileImgNoBlock('floors', 0, 48, 8, 8);
+    },
+
+    generateShipUpperRoomUp = function (tiles, options, x, y) {
+
+    },
+    generateShipUpperRoomDown = function (tiles, options, x, y) {
+
+    },
+    generateShipUpperHallway = function (tiles, options, x, y) {
+        tiles.push({x: x, y: y, t: TileSquare()});
+    },
+    generateShipUpperQuad = function (tiles, options, x, y) {
+        var i;
+
+        for (i = -options.room_width * 2;
+             i < options.room_width * 2;
+             i += 1) {
+            tiles.push({x: i, y: 0, t: TileGroundBlue()});
+        };
+
+        generateShipUpperHallway(tiles, options, -(options.room_width + 1), y);
+        generateShipUpperHallway(tiles, options, options.room_width + 1, y);
     };
 
     exports.generateShipUpper = function () {
-        var tiles = [];
+        var tiles = [], options = {}, i;
 
-        tiles.push({x: 0, y: 1, t: TileElevator()});
-        tiles.push({x: -1, y: 1, t: TileSquare()});
-        tiles.push({x: 1, y: 1, t: TileSquare()});
+        options.room_width = 5;
+        options.room_height = Math.floor((Math.random() * 5) + 5);
+        options.room_hall_count = Math.floor((Math.random() * 3) + 2);
+
+        for (i = -options.room_height * 2;
+             i < options.room_height * 2;
+             i += 1) {
+            tiles.push({x: 0, y: i, t: TileGroundBlue()});
+        }
+
+        generateShipUpperQuad(tiles, options, 0, -(options.room_height + 1));
+        generateShipUpperQuad(tiles, options, 0, options.room_height + 1);
 
         return tiles;
     };
@@ -100,7 +134,6 @@ var game = (function () {
         resetPlayer();
 
         rl.setTiles(generator.generateShipUpper());
-        rl.addTile(3, 3);
     },
 
     renderTitle = function () {
@@ -112,13 +145,20 @@ var game = (function () {
             .style('#cccccc')
             .write('press a key to continue', 1, 2);
     },
+    renderStory = function () {
+        // todo: timer fade in story elements
+    },
     renderInstructions = function () {
         rl.clear();
         renderStars();
         rl.style('#ffffff')
-            .write('instructions', 1, 1)
+            .write('instructions', 27, 1)
             .style('#cccccc')
-            .write('press a key to continue', 1, 2);
+            .write('w: move up', 1, 2)
+            .write('s: move down', 1, 3)
+            .write('a: move left', 1, 4)
+            .write('d: move right', 1, 5)
+            .write('press a key to continue', 1, 7);
     },
     renderGame = function () {
         rl.updateTilesIndex()
