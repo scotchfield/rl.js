@@ -83,7 +83,7 @@ var game = (function () {
                 star.y = 0;
             }
         });
-        renderTitle();
+        render();
     },
     renderStars = function () {
         stars.forEach(function (star) {
@@ -113,8 +113,9 @@ var game = (function () {
             .write('press a key to continue', 1, 2);
     },
     renderInstructions = function () {
-        rl.clear()
-            .style('#ffffff')
+        rl.clear();
+        renderStars();
+        rl.style('#ffffff')
             .write('instructions', 1, 1)
             .style('#cccccc')
             .write('press a key to continue', 1, 2);
@@ -122,7 +123,8 @@ var game = (function () {
     renderGame = function () {
         rl.updateTilesIndex()
             .clear()
-            .render(player.x - rl.cx(), player.y - rl.cy())
+        renderStars();
+        rl.render(player.x - rl.cx(), player.y - rl.cy())
             .style(player.style)
             .write(player.c, rl.cx(), rl.cy());
     },
