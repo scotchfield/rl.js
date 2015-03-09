@@ -216,7 +216,6 @@ var game = (function () {
         rl.addTile(24, 24, rl.TileImgFull('planet', 0, 0, 36, 36, 4));
         render();
     },
-    loadImageFloors = function () {},
 
     initStars = function () {
         var i;
@@ -342,7 +341,8 @@ var game = (function () {
 
     rl.create('game_canvas', options)
         .loadImage('oryx_planet.png', 'planet', loadImagePlanet)
-        .loadImage('oryx_floors.png', 'floors', loadImageFloors)
+        .loadImage('oryx_floors.png', 'floors')
+        .loadImage('oryx_player.png', 'player')
         .registerKeydown(keydownTitle);
 
     initStars();
