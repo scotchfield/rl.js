@@ -192,7 +192,7 @@ var game = (function () {
         tileHeight: 16,
         width: width,
         height: height,
-        alwaysShowTiles: true,
+        //alwaysShowTiles: true,
     };
 
 

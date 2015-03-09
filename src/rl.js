@@ -388,11 +388,39 @@ var rl = (function () {
         return this;
     };
 
+    // Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm
+    rl.blockedLine = function (x0, y0, x1, y1) {
+        var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1,
+            dy = Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1,
+            err = (dx > dy ? dx : -dy) / 2,
+            err2;
+
+        while (true) {
+            if (x0 === x1 && y0 === y1) {
+                break;
+            }
+            if (blocking[x0][y0] === true) {
+                return true;
+            }
+            err2 = err;
+            if (err2 > -dx) {
+                err -= dy;
+                x0 += sx;
+            }
+            if (err2 < dy) {
+                err += dx;
+                y0 += sy;
+            }
+
+        }
+
+        return false;
+    };
+
     rl.updateVisible = function (x, y) {
         tiles.forEach(function (t) {
-            var dist = Math.sqrt(Math.pow(x - t.x, 2) + Math.pow(y - t.y, 2));
             t.visible = false;
-            if (dist < 5) {
+            if (! rl.blockedLine(x, y, t.x, t.y)) {
                 t.visible = true;
                 t.observed = true;
             }
