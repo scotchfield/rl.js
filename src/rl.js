@@ -322,7 +322,13 @@ var rl = (function () {
         tiles.forEach(function (t) {
             if (t.x >= x && t.x < x + options.width &&
                     t.y >= y && t.y < y + options.height) {
-                t.t.render(t.x - x, t.y - y);
+                if (options.alwaysShowTiles === true || t.visible !== false) {
+                    t.t.render(t.x - x, t.y - y);
+                } else if (t.observed === true) {
+                    ctx.globalAlpha = 0.3;
+                    t.t.render(t.x - x, t.y - y);
+                    ctx.globalAlpha = 1;
+                }
             }
         });
 
@@ -377,6 +383,19 @@ var rl = (function () {
             tiles_index[t.x] = tiles_index[t.x] || {}
             tiles_index[t.x][t.y] = tiles_index[t.x][t.y] || [];
             tiles_index[t.x][t.y].push(t.t);
+        });
+
+        return this;
+    };
+
+    rl.updateVisible = function (x, y) {
+        tiles.forEach(function (t) {
+            var dist = Math.sqrt(Math.pow(x - t.x, 2) + Math.pow(y - t.y, 2));
+            t.visible = false;
+            if (dist < 5) {
+                t.visible = true;
+                t.observed = true;
+            }
         });
 
         return this;
