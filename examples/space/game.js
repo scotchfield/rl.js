@@ -48,7 +48,7 @@ var generator = (function () {
 
     generateShipUpperHallway = function (tiles, options, x, y) {
         var i, j, x_offset = Math.floor(options.room_width * 0.5);
-console.log(options);
+
         replaceTileWith(x - x_offset, y - 1, tiles, TileDoor());
         replaceTileWith(x + x_offset, y - 1, tiles, TileDoor());
         replaceTileWith(x - x_offset, y + 1, tiles, TileDoor());
@@ -129,7 +129,7 @@ console.log(options);
     };
 
     exports.generateShipUpper = function () {
-        var tiles = [], options = {}, i, i_min, i_max;
+        var tiles = [], options = {}, i, i_min, i_max, x_dist;
 
         options.room_width = 5;
         options.room_height = Math.floor((Math.random() * 5) + 5);
@@ -156,6 +156,24 @@ console.log(options);
         generateShipUpperQuad(tiles, options, 0, -(options.room_height + 1));
         generateShipUpperQuad(tiles, options, 0, options.room_height + 1);
 
+        x_dist = options.room_width * 2;
+
+        for (i = i_min; i <= i_max; i += 1) {
+            if (i === i_min) {
+                replaceTileWith(-x_dist, i, tiles, TileWallTopLeft());
+                replaceTileWith(x_dist, i, tiles, TileWallTopRight());
+            } else if (i === i_max) {
+                replaceTileWith(-x_dist, i, tiles, TileWallBottomLeft());
+                replaceTileWith(x_dist, i, tiles, TileWallBottomRight());
+            } else {
+                tile_obj = rl.tilesAt(-options.room_width * 2, i, tiles);
+                if (tile_obj.length > 0 && tile_obj[0].t.blocking !== true) {
+                    replaceTileWith(-x_dist, i, tiles, TileWallVertical());
+                    replaceTileWith(x_dist, i, tiles, TileWallVertical());
+                }
+            }
+        }
+
         return tiles;
     };
 
@@ -174,7 +192,7 @@ var game = (function () {
         tileHeight: 16,
         width: width,
         height: height,
-        //alwaysShowTiles: true,
+        alwaysShowTiles: true,
     };
 
 
