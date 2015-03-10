@@ -114,6 +114,14 @@ var generator = (function () {
                              {id: 'floors', x: 24, y: 8, w: 8, h: 8},
                              {id: 'floors', x: 64, y: 8, w: 8, h: 8});
     },
+    TileElevator = function (lit, up, down) {
+        var t = TileToggleLitNoBlock(lit,
+                              {id: 'floors', x: 72, y: 32, w: 8, h: 8},
+                              {id: 'floors', x: 72, y: 40, w: 8, h: 8});
+        t.up = up;
+        t.down = down;
+        return t;
+    },
 
     replaceTileWith = function (x, y, tiles, t) {
         rl.removeTilesAt(x, y, tiles);
@@ -203,7 +211,7 @@ var generator = (function () {
                                  options.room_width + 1, y, lit);
     };
 
-    exports.generateShipUpper = function (lit) {
+    exports.generateShipUpper = function (lit, up, down) {
         var tiles = [], options = {}, i, i_min, i_max, x_dist, tile_obj;
 
         options.room_width = 5;
@@ -251,7 +259,10 @@ var generator = (function () {
             }
         }
 
-        return tiles;
+        tiles.push({x: 0, y: options.room_height * 2 - 1,
+                    t: TileElevator(lit, up, down)});
+
+        return {tiles: tiles, options: options};
     };
 
     return exports;
@@ -382,13 +393,16 @@ var game = (function () {
     setup = function () {
         var i, j;
 
-        map['ship01'] = generator.generateShipUpper(true);
-        map['ship02'] = generator.generateShipUpper(false);
+        map['ship01'] = generator.generateShipUpper(true, null, 'ship02');
+        map['ship02'] = generator.generateShipUpper(false, 'ship01', null);
 
         state = 'ship01';
         resetPlayer();
 
-        rl.setTiles(map[state]);
+        player.x = -3;
+        player.y = -map[state].options.room_height * 2 + 2;
+
+        rl.setTiles(map[state].tiles);
     },
 
     renderTitle = function () {
@@ -432,6 +446,7 @@ var game = (function () {
 
     keydownMap = function keydown(e) {
         var nx = player.x, ny = player.y;
+        console.log(e);
         if (rl.getKey(e) === rl.key.d) {
             nx += 1;
             player.d = 'right';
@@ -445,7 +460,7 @@ var game = (function () {
             ny -= 1;
             player.d = 'up';
         }
-        if (rl.canMoveTo(nx, ny)) {
+        if (rl.canMoveTo(nx, ny) && (nx !== player.x || ny !== player.y)) {
             player.x = nx;
             player.y = ny;
             player.turn += 1;
