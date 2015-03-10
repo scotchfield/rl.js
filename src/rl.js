@@ -159,10 +159,18 @@ var rl = (function () {
 
     // Just like TileImg, but toggle the blocking parameter so that
     // characters can walk over the square (for example, a dirt or grass tile).
-    rl.TileImgNoBlock = function (t) {
-        var that = rl.TileImg(t);
+    rl.TileImgNoBlock = function (t, options) {
+        var that = rl.TileImg(t), key;
+
+        options = options || {};
 
         that.blocking = false;
+
+        for (key in options) {
+            if (options.hasOwnProperty(key)) {
+                that[key] = options[key];
+            }
+        }
 
         return that;
     };
@@ -467,6 +475,14 @@ var rl = (function () {
         return this;
     };
 
+    rl.globalAlpha = function (x) {
+        x = x || 1;
+
+        ctx.globalAlpha = x;
+
+        return this;
+    };
+
     rl.canvasWidth = function () {
         return options.width * options.tileWidth;
     };
@@ -499,6 +515,24 @@ var rl = (function () {
                 tile_array.splice(i, 1);
             }
         }
+
+        return this;
+    };
+
+    rl.keepTopBlockingTiles = function (tile_array) {
+        var i, found = {}, key;
+
+        tile_array = tile_array || tiles;
+
+        for (i = tile_array.length - 1; i >= 0; i -= 1) {
+            key = tile_array[i].x + ',' + tile_array[i].y;
+            if (found[key] !== undefined) {
+                tile_array.splice(i, 1);
+            }
+            found[key] = true;
+        }
+
+        return this;
     };
 
     window.addEventListener('keydown', rl.keydown);
