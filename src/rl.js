@@ -25,6 +25,7 @@ var rl = (function () {
         fontFillStyle: '#ffffff',
         textAlign: 'center',
         imageSmoothingEnabled: false,
+        baseAlpha: 0.3,
     };
 
     // Note: These are only catching the keyCode, so they won't identify
@@ -110,18 +111,18 @@ var rl = (function () {
     // image_id: the key associated with the cached image
     // (x, y): the (x, y) coordinates in image_id where the tile begins
     // (width, height): the size of the source tile in image_id
-    rl.TileImg = function (image_id, x, y, width, height) {
+    rl.TileImg = function (t) {
         var that = rl.TileBlocking();
 
-        that.image_id = image_id;
-        that.image_x = x;
-        that.image_y = y;
-        that.image_w = width;
-        that.image_h = height;
+        that.image_id = t.id;
+        that.image_x = t.x;
+        that.image_y = t.y;
+        that.image_w = t.w;
+        that.image_h = t.h;
 
         that.render = function (x, y) {
-            if (images[image_id] !== undefined) {
-                ctx.drawImage(images[image_id],
+            if (images[that.image_id] !== undefined) {
+                ctx.drawImage(images[that.image_id],
                               that.image_x, that.image_y,
                               that.image_w, that.image_h,
                               x * options.tileWidth, y * options.tileHeight,
@@ -132,23 +133,24 @@ var rl = (function () {
         return that;
     };
 
-    rl.TileImgFull = function (image_id, x, y, width, height, scale) {
+    rl.TileImgFull = function (t) {
         var that = rl.TileBlocking();
 
-        that.image_id = image_id;
-        that.image_x = x;
-        that.image_y = y;
-        that.image_w = width;
-        that.image_h = height;
-        that.scale = scale;
+        that.image_id = t.id;
+        that.image_x = t.x;
+        that.image_y = t.y;
+        that.image_w = t.w;
+        that.image_h = t.h;
+        that.scale = t.scale || 1;
 
         that.render = function (x, y) {
-            if (images[image_id] !== undefined) {
-                ctx.drawImage(images[image_id],
+            if (images[that.image_id] !== undefined) {
+                ctx.drawImage(images[that.image_id],
                               that.image_x, that.image_y,
                               that.image_w, that.image_h,
                               x * options.tileWidth, y * options.tileHeight,
-                              that.image_w * scale, that.image_h * scale);
+                              that.image_w * that.scale,
+                              that.image_h * that.scale);
             }
         };
 
@@ -157,8 +159,8 @@ var rl = (function () {
 
     // Just like TileImg, but toggle the blocking parameter so that
     // characters can walk over the square (for example, a dirt or grass tile).
-    rl.TileImgNoBlock = function (image_id, x, y, width, height) {
-        var that = rl.TileImg(image_id, x, y, width, height);
+    rl.TileImgNoBlock = function (t) {
+        var that = rl.TileImg(t);
 
         that.blocking = false;
 
@@ -325,7 +327,7 @@ var rl = (function () {
                 if (options.alwaysShowTiles === true || t.visible !== false) {
                     t.t.render(t.x - x, t.y - y);
                 } else if (t.observed === true) {
-                    ctx.globalAlpha = 0.3;
+                    ctx.globalAlpha = options.baseAlpha;
                     t.t.render(t.x - x, t.y - y);
                     ctx.globalAlpha = 1;
                 }

@@ -2,43 +2,43 @@ var generator = (function () {
     var exports = {},
 
     TileDoor = function () {
-        return rl.TileImgNoBlock('floors', 16, 0, 8, 8);
+        return rl.TileImgNoBlock({id: 'floors', x: 16, y: 0, w: 8, h: 8});
     },
     TileSquare = function () {
-        return rl.TileImg('floors', 32, 8, 8, 8);
+        return rl.TileImg({id: 'floors', x: 32, y: 8, w: 8, h: 8});
     },
     TileGroundBlue = function () {
-        return rl.TileImgNoBlock('floors', 0, 48, 8, 8);
+        return rl.TileImgNoBlock({id: 'floors', x: 0, y: 48, w: 8, h: 8});
     },
     TileWallTopLeft = function () {
-        return rl.TileImg('floors', 0, 0, 8, 8);
+        return rl.TileImg({id: 'floors', x: 0, y: 0, w: 8, h: 8});
     },
     TileWallTopRight = function () {
-        return rl.TileImg('floors', 0, 8, 8, 8);
+        return rl.TileImg({id: 'floors', x: 0, y: 8, w: 8, h: 8});
     },
     TileWallBottomLeft = function () {
-        return rl.TileImg('floors', 0, 24, 8, 8);
+        return rl.TileImg({id: 'floors', x: 0, y: 24, w: 8, h: 8});
     },
     TileWallBottomRight = function () {
-        return rl.TileImg('floors', 0, 16, 8, 8);
+        return rl.TileImg({id: 'floors', x: 0, y: 16, w: 8, h: 8});
     },
     TileWallHorizontal = function () {
-        return rl.TileImg('floors', 32, 0, 8, 8);
+        return rl.TileImg({id: 'floors', x: 32, y: 0, w: 8, h: 8});
     },
     TileWallVertical = function () {
-        return rl.TileImg('floors', 32, 24, 8, 8);
+        return rl.TileImg({id: 'floors', x: 32, y: 24, w: 8, h: 8});
     },
     TileWallTopT = function () {
-        return rl.TileImg('floors', 24, 0, 8, 8);
+        return rl.TileImg({id: 'floors', x: 24, y: 0, w: 8, h: 8});
     },
     TileWallBottomT = function () {
-        return rl.TileImg('floors', 24, 16, 8, 8);
+        return rl.TileImg({id: 'floors', x: 24, y: 16, w: 8, h: 8});
     },
     TileWallLeftT = function () {
-        return rl.TileImg('floors', 24, 24, 8, 8);
+        return rl.TileImg({id: 'floors', x: 24, y: 24, w: 8, h: 8});
     },
     TileWallRightT = function () {
-        return rl.TileImg('floors', 24, 8, 8, 8);
+        return rl.TileImg({id: 'floors', x: 24, y: 8, w: 8, h: 8});
     },
 
     replaceTileWith = function (x, y, tiles, t) {
@@ -187,19 +187,19 @@ var game = (function () {
         map = {}, tiles = {},
 
     TilePlayerRight = function () {
-        return rl.TileImg('player', 0, 0, 8, 8);
+        return rl.TileImg({id: 'player', x: 0, y: 0, w: 8, h: 8});
     },
     TilePlayerDown = function () {
-        return rl.TileImg('player', 8, 0, 8, 8);
+        return rl.TileImg({id: 'player', x: 8, y: 0, w: 8, h: 8});
     },
     TilePlayerLeft = function () {
-        return rl.TileImg('player', 16, 0, 8, 8);
+        return rl.TileImg({id: 'player', x: 16, y: 0, w: 8, h: 8});
     },
     TilePlayerUp = function () {
-        return rl.TileImg('player', 24, 0, 8, 8);
+        return rl.TileImg({id: 'player', x: 24, y: 0, w: 8, h: 8});
     },
     TilePlayerDead = function () {
-        return rl.TileImg('player', 32, 0, 8, 8);
+        return rl.TileImg({id: 'player', x: 32, y: 0, w: 8, h: 8});
     },
 
     options = {
@@ -208,7 +208,7 @@ var game = (function () {
         tileHeight: 16,
         width: width,
         height: height,
-        //alwaysShowTiles: true,
+        alwaysShowTiles: true,
     };
 
 
@@ -238,7 +238,8 @@ var game = (function () {
     },
 
     loadImagePlanet = function () {
-        rl.addTile(24, 24, rl.TileImgFull('planet', 0, 0, 36, 36, 4));
+        rl.addTile(24, 24, rl.TileImgFull({id: 'planet', x: 0, y: 0,
+                                           w: 36, h: 36, scale: 4}));
         render();
     },
 
