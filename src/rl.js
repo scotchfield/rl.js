@@ -446,6 +446,12 @@ var rl = (function () {
         return this;
     };
 
+    rl.applyTiles = function (f) {
+        tiles.forEach(f);
+
+        return this;
+    };
+
     rl.fillRect = function (x, y, width, height) {
         ctx.fillRect(x, y, width, height);
 
