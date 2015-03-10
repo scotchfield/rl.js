@@ -186,6 +186,22 @@ var game = (function () {
         player, width = 40, height = 40,
         map = {}, tiles = {},
 
+    TilePlayerRight = function () {
+        return rl.TileImg('player', 0, 0, 8, 8);
+    },
+    TilePlayerDown = function () {
+        return rl.TileImg('player', 8, 0, 8, 8);
+    },
+    TilePlayerLeft = function () {
+        return rl.TileImg('player', 16, 0, 8, 8);
+    },
+    TilePlayerUp = function () {
+        return rl.TileImg('player', 24, 0, 8, 8);
+    },
+    TilePlayerDead = function () {
+        return rl.TileImg('player', 32, 0, 8, 8);
+    },
+
     options = {
         font: '14pt monospace',
         tileWidth: 16,
@@ -208,7 +224,16 @@ var game = (function () {
 
     var resetPlayer = function () {
         player = {
-            x: 0, y: 0, c: '@', style: '#ffffff',
+            x: 0, y: 0, d: 'down',
+            c: '@', style: '#ffffff',
+            up: TilePlayerUp(),
+            down: TilePlayerDown(),
+            left: TilePlayerLeft(),
+            right: TilePlayerRight(),
+            dead: TilePlayerDead(),
+            render: function (x, y) {
+                player[player.d].render(x, y);
+            },
         };
     },
 
@@ -291,9 +316,8 @@ var game = (function () {
     renderGame = function () {
         rl.clear();
         renderStars();
-        rl.render(player.x - rl.cx(), player.y - rl.cy())
-            .style(player.style)
-            .write(player.c, rl.cx(), rl.cy());
+        rl.render(player.x - rl.cx(), player.y - rl.cy());
+        player.render(rl.cx(), rl.cy());
     },
     render = function () {
         render_cb.forEach(
@@ -307,12 +331,16 @@ var game = (function () {
         var nx = player.x, ny = player.y;
         if (rl.getKey(e) === rl.key.d) {
             nx += 1;
+            player.d = 'right';
         } else if (rl.getKey(e) === rl.key.a) {
             nx -= 1;
+            player.d = 'left';
         } else if (rl.getKey(e) === rl.key.s) {
             ny += 1;
+            player.d = 'down';
         } else if (rl.getKey(e) === rl.key.w) {
             ny -= 1;
+            player.d = 'up';
         }
         if (rl.canMoveTo(nx, ny)) {
             player.x = nx;
