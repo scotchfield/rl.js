@@ -302,6 +302,7 @@ var game = (function () {
         player = {
             x: 0, y: 0, d: 'down',
             c: '@', style: '#ffffff',
+            turn: 0,
             up: TilePlayerUp(),
             down: TilePlayerDown(),
             left: TilePlayerLeft(),
@@ -310,6 +311,7 @@ var game = (function () {
             render: function (x, y) {
                 player[player.d].render(x, y);
             },
+            console: [],
         };
     },
 
@@ -361,6 +363,18 @@ var game = (function () {
                 .fillRect(Math.round(star.x), Math.round(star.y), 5, 5);
         });
     },
+    renderHUD = function () {
+        var i;
+
+        player.console = player.console.slice(-4);
+        for (i = 0; i < player.console.length; i += 1) {
+            rl.style('#ffffff')
+                .write(player.console[i], 0, height - 4 + i);
+        };
+
+        rl.style('#ffffff')
+            .write(player.turn, 0, 0);
+    },
 
     setup = function () {
         var i, j;
@@ -400,6 +414,7 @@ var game = (function () {
         renderStars();
         rl.render(player.x - rl.cx(), player.y - rl.cy());
         player.render(rl.cx(), rl.cy());
+        renderHUD();
     },
     render = function () {
         render_cb.forEach(
@@ -427,6 +442,7 @@ var game = (function () {
         if (rl.canMoveTo(nx, ny)) {
             player.x = nx;
             player.y = ny;
+            player.turn += 1;
             updateGame();
             render();
         }

@@ -231,6 +231,9 @@ var rl = (function () {
     // For example, rl.style('#ffffff').write('Hello', 0, 0) will write the
     // 'Hello' string in white letters in the top-left corner.
     rl.write = function (s, x, y) {
+        if (typeof s !== 'string') {
+            s = s.toString();
+        }
         for (var i = 0; i < s.length; i += 1) {
             ctx.fillText(s[i],
                 (x + i + 1) * options.tileWidth - 9,
