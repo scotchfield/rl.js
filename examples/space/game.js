@@ -61,8 +61,9 @@ var generator = (function () {
     TileSquare = function () {
         return rl.TileImg({id: 'floors', x: 32, y: 8, w: 8, h: 8});
     },
-    TileGroundBlue = function () {
-        return rl.TileImgNoBlock({id: 'floors', x: 0, y: 48, w: 8, h: 8});
+    TileGroundBlue = function (lit) {
+        return rl.TileImgNoBlock({id: 'floors', x: 0, y: 48, w: 8, h: 8},
+                                 {lit: lit});
     },
     TileWallTopLeft = function (lit) {
         return TileToggleLit(lit,
@@ -267,6 +268,8 @@ var generator = (function () {
         tiles.push({x: 0, y: options.room_height * 2 - 1,
                     t: TileElevator(lit, options.up, options.down)});
 
+        rl.keepTopBlockingTiles(tiles);
+
         return {tiles: tiles, options: options};
     };
 
@@ -321,7 +324,7 @@ var game = (function () {
         player = {
             x: 0, y: 0, d: 'down',
             c: '@', style: '#ffffff',
-            turn: 0,
+            turn: 0, shadow_turn: 0,
             up: TilePlayerUp(),
             down: TilePlayerDown(),
             left: TilePlayerLeft(),
@@ -332,6 +335,25 @@ var game = (function () {
             },
             console: [],
         };
+    },
+
+    padTwoDigits = function (x) {
+        return ('0' + x.toString()).substr(-2);
+    },
+    toClock = function (t, full) {
+        var s = [];
+
+        full = undefined ? true : full;
+
+        if (full !== false) {
+            s.push(padTwoDigits(Math.floor(t / 3600)));
+            t = t % 3600;
+        }
+        s.push(padTwoDigits(Math.floor(t / 60)));
+        t = t % 60;
+        s.push(padTwoDigits(t));
+
+        return s.join(':');
     },
 
     loadImagePlanet = function () {
@@ -385,6 +407,13 @@ var game = (function () {
     renderHUD = function () {
         var i;
 
+        rl.style('rgb(255,255,255)')
+            .globalAlpha(0.25)
+            .fillRect(0, 0, width * options.tileWidth, options.tileHeight + 2)
+            .fillRect(0, (height - 4) * options.tileHeight,
+                      width * options.tileWidth, options.tileHeight * 4)
+            .globalAlpha();
+
         player.console = player.console.slice(-4);
         for (i = 0; i < player.console.length; i += 1) {
             rl.style('#ffffff')
@@ -392,7 +421,12 @@ var game = (function () {
         };
 
         rl.style('#ffffff')
-            .write(player.turn, 0, 0);
+            .write(toClock(player.turn), 1, 0)
+            .style('#ff0000')
+            .write(toClock(player.shadow_turn, false), 34, 0);
+
+        rl.style('#888888')
+            .write('h: help', 32, height - 5);
     },
 
     setup = function () {
@@ -439,7 +473,8 @@ var game = (function () {
             .write('e: interact/pick up', 1, 6)
             .write('>: descend elevator', 1, 7)
             .write('<: ascend elevator', 1, 8)
-            .write('press a key to continue', 1, 10);
+            .write('h: help', 1, 10)
+            .write('press a key to continue', 1, 12);
     },
     renderGame = function () {
         rl.clear();
@@ -457,9 +492,14 @@ var game = (function () {
     },
 
     keydownMap = function keydown(e) {
-        var nx = player.x, ny = player.y;
+        var nx = player.x, ny = player.y, lit;
 
-        if (rl.isKey(e, rl.key.d)) {
+        if (rl.isKey(e, rl.key.h)) {
+            rl.unregisterKeydown(keydownMap)
+                .registerKeydown(keydownInstructions);
+            render_cb.removeCb(renderGame)
+                .push(renderInstructions);
+        } else if (rl.isKey(e, rl.key.d)) {
             nx += 1;
             player.d = 'right';
         } else if (rl.isKey(e, rl.key.a)) {
@@ -471,12 +511,15 @@ var game = (function () {
         } else if (rl.isKey(e, rl.key.w)) {
             ny -= 1;
             player.d = 'up';
+        } else if (rl.isKey(e, rl.key.u)) {
+            player.console.push('Nothing here.');
         } else if (rl.isKey(e, rl.key.less_than)) {
             rl.tilesAt(player.x, player.y).forEach(function (tile) {
                 if (map[tile.t.up] !== undefined) {
                     state = tile.t.up;
                     rl.setTiles(map[state].tiles);
                     player.turn += 1;
+                    player.console.push('You go up one level.');
                     updateGame();
                     render();
                 }
@@ -486,7 +529,8 @@ var game = (function () {
                 if (map[tile.t.down] !== undefined) {
                     state = tile.t.down;
                     rl.setTiles(map[state].tiles);
-                    player.turn+= 1;
+                    player.turn += 1;
+                    player.console.push('You descend one level.');
                     updateGame();
                     render();
                 }
@@ -496,6 +540,19 @@ var game = (function () {
             player.x = nx;
             player.y = ny;
             player.turn += 1;
+
+            lit = false;
+            rl.tilesAt(nx, ny).forEach(function (tile) {
+                if (tile.t.lit === true) {
+                    lit = true;
+                }
+            });
+            if (lit === true) {
+                player.shadow_turn = Math.max(0, player.shadow_turn - 5);
+            } else {
+                player.shadow_turn += 1;
+            }
+
             updateGame();
             render();
         }
