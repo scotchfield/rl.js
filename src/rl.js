@@ -28,49 +28,49 @@ var rl = (function () {
         baseAlpha: 0.3,
     };
 
-    // Note: These are only catching the keyCode, so they won't identify
-    // any capital or control characters.
     rl.key = {
-        left: 37,
-        up: 38,
-        right: 39,
-        down: 40,
-        0: 48,
-        1: 49,
-        2: 50,
-        3: 51,
-        4: 52,
-        5: 53,
-        6: 54,
-        7: 55,
-        8: 56,
-        9: 57,
-        a: 65,
-        b: 66,
-        c: 67,
-        d: 68,
-        e: 69,
-        f: 70,
-        g: 71,
-        h: 72,
-        i: 73,
-        j: 74,
-        k: 75,
-        l: 76,
-        m: 77,
-        n: 78,
-        o: 79,
-        p: 80,
-        q: 81,
-        r: 82,
-        s: 83,
-        t: 84,
-        u: 85,
-        v: 86,
-        w: 87,
-        x: 88,
-        y: 89,
-        z: 90,
+        left: {keyCode: 37},
+        up: {keyCode: 38},
+        right: {keyCode: 39},
+        down: {keyCode: 40},
+        0: {keyCode: 48},
+        1: {keyCode: 49},
+        2: {keyCode: 50},
+        3: {keyCode: 51},
+        4: {keyCode: 52},
+        5: {keyCode: 53},
+        6: {keyCode: 54},
+        7: {keyCode: 55},
+        8: {keyCode: 56},
+        9: {keyCode: 57},
+        a: {keyCode: 65},
+        b: {keyCode: 66},
+        c: {keyCode: 67},
+        d: {keyCode: 68},
+        e: {keyCode: 69},
+        f: {keyCode: 70},
+        g: {keyCode: 71},
+        h: {keyCode: 72},
+        i: {keyCode: 73},
+        j: {keyCode: 74},
+        k: {keyCode: 75},
+        l: {keyCode: 76},
+        m: {keyCode: 77},
+        n: {keyCode: 78},
+        o: {keyCode: 79},
+        p: {keyCode: 80},
+        q: {keyCode: 81},
+        r: {keyCode: 82},
+        s: {keyCode: 83},
+        t: {keyCode: 84},
+        u: {keyCode: 85},
+        v: {keyCode: 86},
+        w: {keyCode: 87},
+        x: {keyCode: 88},
+        y: {keyCode: 89},
+        z: {keyCode: 90},
+        less_than: {keyCode: 188, shiftKey: true},
+        greater_than: {keyCode: 190, shiftKey: true},
     };
 
     // Tiles are represented as objects, and have two primary properties:
@@ -434,10 +434,16 @@ var rl = (function () {
         return this;
     };
 
-    rl.getKey = function (e) {
-        // todo: actually check for shift/control and return different
-        // keys if necessary
-        return e.keyCode;
+    rl.isKey = function (e, key) {
+        var k;
+
+        for (k in key) {
+            if (key.hasOwnProperty(k) && e[k] !== key[k]) {
+                return false;
+            }
+        }
+
+        return true;
     };
 
     rl.setTiles = function (new_tiles) {

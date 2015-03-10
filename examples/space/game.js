@@ -446,19 +446,23 @@ var game = (function () {
 
     keydownMap = function keydown(e) {
         var nx = player.x, ny = player.y;
-        console.log(e);
-        if (rl.getKey(e) === rl.key.d) {
+        //console.log(e);
+        if (rl.isKey(e, rl.key.d)) {
             nx += 1;
             player.d = 'right';
-        } else if (rl.getKey(e) === rl.key.a) {
+        } else if (rl.isKey(e, rl.key.a)) {
             nx -= 1;
             player.d = 'left';
-        } else if (rl.getKey(e) === rl.key.s) {
+        } else if (rl.isKey(e, rl.key.s)) {
             ny += 1;
             player.d = 'down';
-        } else if (rl.getKey(e) === rl.key.w) {
+        } else if (rl.isKey(e, rl.key.w)) {
             ny -= 1;
             player.d = 'up';
+        } else if (rl.isKey(e, rl.key.less_than)) {
+            console.log('less than!');
+        } else if (rl.isKey(e, rl.key.greater_than)) {
+            console.log('greater than!');
         }
         if (rl.canMoveTo(nx, ny) && (nx !== player.x || ny !== player.y)) {
             player.x = nx;
