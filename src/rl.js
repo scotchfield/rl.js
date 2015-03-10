@@ -28,6 +28,9 @@ var rl = (function () {
         baseAlpha: 0.3,
     };
 
+    // Used by isKey to detect keypresses. isKey expects each of the
+    // properties provided to match. For example, in the code below,
+    // matching keyCode 65 will match 'a' and 'A'.
     rl.key = {
         left: {keyCode: 37},
         up: {keyCode: 38},
@@ -376,6 +379,7 @@ var rl = (function () {
         return this;
     };
 
+    // Populate the blocking property for quick lookup.
     rl.updateBlocking = function () {
         blocking = {};
 
@@ -389,6 +393,8 @@ var rl = (function () {
         return this;
     };
 
+    // Populate tiles_index, allowing for quick lookup of tiles at a
+    // particular (x, y) location.
     rl.updateTilesIndex = function () {
         tiles_index = {};
 
@@ -401,6 +407,8 @@ var rl = (function () {
         return this;
     };
 
+    // Attempt to draw a line from one source tile to the other. If a line
+    // can be drawn, the path between the two tiles is clear of obstruction.
     // Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm
     rl.blockedLine = function (x0, y0, x1, y1) {
         var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1,
@@ -430,6 +438,8 @@ var rl = (function () {
         return false;
     };
 
+    // Iterate through all of the tiles to determine which ones are currently
+    // visible from the given (x, y) position.
     rl.updateVisible = function (x, y) {
         tiles.forEach(function (t) {
             t.visible = false;
@@ -442,6 +452,9 @@ var rl = (function () {
         return this;
     };
 
+    // Compares a keypress event with an object of expected properties. If
+    // the event contains all of the properties specified in key, return
+    // true, otherwise false/
     rl.isKey = function (e, key) {
         var k;
 
@@ -454,6 +467,8 @@ var rl = (function () {
         return true;
     };
 
+    // Set the current tiles array to new_tiles. Used, for example, when
+    // changing from one level to another.
     rl.setTiles = function (new_tiles) {
         tiles = new_tiles;
 
@@ -463,18 +478,21 @@ var rl = (function () {
         return this;
     };
 
+    // Apply the given function to each of the tiles.
     rl.applyTiles = function (f) {
         tiles.forEach(f);
 
         return this;
     };
 
+    // Call fillRect directly on the 2d canvas context.
     rl.fillRect = function (x, y, width, height) {
         ctx.fillRect(x, y, width, height);
 
         return this;
     };
 
+    // Set the 2d context's globalAlpha property (drawing opacity).
     rl.globalAlpha = function (x) {
         x = x || 1;
 
@@ -483,14 +501,18 @@ var rl = (function () {
         return this;
     };
 
+    // Return the width of the canvas, in pixels.
     rl.canvasWidth = function () {
         return options.width * options.tileWidth;
     };
 
+    // Return the height of the canvas, in pixels.
     rl.canvasHeight = function () {
         return options.height * options.tileHeight;
     };
 
+    // Return an array containing all of the tiles at a given (x, y) position.
+    // Can optionally accept a tile array instead of using the tiles object.
     rl.tilesAt = function (x, y, tile_array) {
         var tile_return = [];
 
@@ -505,6 +527,8 @@ var rl = (function () {
         return tile_return;
     };
 
+    // Remove all of the tiles at a given (x, y) position.
+    // Can optionally accept a tile array instead of using the tiles object.
     rl.removeTilesAt = function (x, y, tile_array) {
         var i;
 
@@ -519,17 +543,24 @@ var rl = (function () {
         return this;
     };
 
+    // Iterate through the tiles array (or, optionally, a provided tile
+    // array), and retain only the last tile at each (x, y) position that
+    // does not have the blocking property set to false. For example, if
+    // there are two walls at a particular position, keep only the "top"
+    // one--the one that occurs later in the array.
     rl.keepTopBlockingTiles = function (tile_array) {
         var i, found = {}, key;
 
         tile_array = tile_array || tiles;
 
         for (i = tile_array.length - 1; i >= 0; i -= 1) {
-            key = tile_array[i].x + ',' + tile_array[i].y;
-            if (found[key] !== undefined) {
-                tile_array.splice(i, 1);
+            if (tile_array[i].blocking !== false) {
+                key = tile_array[i].x + ',' + tile_array[i].y;
+                if (found[key] !== undefined) {
+                    tile_array.splice(i, 1);
+                }
+                found[key] = true;
             }
-            found[key] = true;
         }
 
         return this;

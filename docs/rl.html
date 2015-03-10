@@ -81,52 +81,55 @@ the tile size, and so on. The defaults are listed here.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Note: These are only catching the keyCode, so they won’t identify
-any capital or control characters.</p>
+              <p>Used by isKey to detect keypresses. isKey expects each of the
+properties provided to match. For example, in the code below,
+matching keyCode 65 will match ‘a’ and ‘A’.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    rl.key = {
-        left: <span class="hljs-number">37</span>,
-        up: <span class="hljs-number">38</span>,
-        right: <span class="hljs-number">39</span>,
-        down: <span class="hljs-number">40</span>,
-        <span class="hljs-number">0</span>: <span class="hljs-number">48</span>,
-        <span class="hljs-number">1</span>: <span class="hljs-number">49</span>,
-        <span class="hljs-number">2</span>: <span class="hljs-number">50</span>,
-        <span class="hljs-number">3</span>: <span class="hljs-number">51</span>,
-        <span class="hljs-number">4</span>: <span class="hljs-number">52</span>,
-        <span class="hljs-number">5</span>: <span class="hljs-number">53</span>,
-        <span class="hljs-number">6</span>: <span class="hljs-number">54</span>,
-        <span class="hljs-number">7</span>: <span class="hljs-number">55</span>,
-        <span class="hljs-number">8</span>: <span class="hljs-number">56</span>,
-        <span class="hljs-number">9</span>: <span class="hljs-number">57</span>,
-        a: <span class="hljs-number">65</span>,
-        b: <span class="hljs-number">66</span>,
-        c: <span class="hljs-number">67</span>,
-        d: <span class="hljs-number">68</span>,
-        e: <span class="hljs-number">69</span>,
-        f: <span class="hljs-number">70</span>,
-        g: <span class="hljs-number">71</span>,
-        h: <span class="hljs-number">72</span>,
-        i: <span class="hljs-number">73</span>,
-        j: <span class="hljs-number">74</span>,
-        k: <span class="hljs-number">75</span>,
-        l: <span class="hljs-number">76</span>,
-        m: <span class="hljs-number">77</span>,
-        n: <span class="hljs-number">78</span>,
-        o: <span class="hljs-number">79</span>,
-        p: <span class="hljs-number">80</span>,
-        q: <span class="hljs-number">81</span>,
-        r: <span class="hljs-number">82</span>,
-        s: <span class="hljs-number">83</span>,
-        t: <span class="hljs-number">84</span>,
-        u: <span class="hljs-number">85</span>,
-        v: <span class="hljs-number">86</span>,
-        w: <span class="hljs-number">87</span>,
-        x: <span class="hljs-number">88</span>,
-        y: <span class="hljs-number">89</span>,
-        z: <span class="hljs-number">90</span>,
+        left: {keyCode: <span class="hljs-number">37</span>},
+        up: {keyCode: <span class="hljs-number">38</span>},
+        right: {keyCode: <span class="hljs-number">39</span>},
+        down: {keyCode: <span class="hljs-number">40</span>},
+        <span class="hljs-number">0</span>: {keyCode: <span class="hljs-number">48</span>},
+        <span class="hljs-number">1</span>: {keyCode: <span class="hljs-number">49</span>},
+        <span class="hljs-number">2</span>: {keyCode: <span class="hljs-number">50</span>},
+        <span class="hljs-number">3</span>: {keyCode: <span class="hljs-number">51</span>},
+        <span class="hljs-number">4</span>: {keyCode: <span class="hljs-number">52</span>},
+        <span class="hljs-number">5</span>: {keyCode: <span class="hljs-number">53</span>},
+        <span class="hljs-number">6</span>: {keyCode: <span class="hljs-number">54</span>},
+        <span class="hljs-number">7</span>: {keyCode: <span class="hljs-number">55</span>},
+        <span class="hljs-number">8</span>: {keyCode: <span class="hljs-number">56</span>},
+        <span class="hljs-number">9</span>: {keyCode: <span class="hljs-number">57</span>},
+        a: {keyCode: <span class="hljs-number">65</span>},
+        b: {keyCode: <span class="hljs-number">66</span>},
+        c: {keyCode: <span class="hljs-number">67</span>},
+        d: {keyCode: <span class="hljs-number">68</span>},
+        e: {keyCode: <span class="hljs-number">69</span>},
+        f: {keyCode: <span class="hljs-number">70</span>},
+        g: {keyCode: <span class="hljs-number">71</span>},
+        h: {keyCode: <span class="hljs-number">72</span>},
+        i: {keyCode: <span class="hljs-number">73</span>},
+        j: {keyCode: <span class="hljs-number">74</span>},
+        k: {keyCode: <span class="hljs-number">75</span>},
+        l: {keyCode: <span class="hljs-number">76</span>},
+        m: {keyCode: <span class="hljs-number">77</span>},
+        n: {keyCode: <span class="hljs-number">78</span>},
+        o: {keyCode: <span class="hljs-number">79</span>},
+        p: {keyCode: <span class="hljs-number">80</span>},
+        q: {keyCode: <span class="hljs-number">81</span>},
+        r: {keyCode: <span class="hljs-number">82</span>},
+        s: {keyCode: <span class="hljs-number">83</span>},
+        t: {keyCode: <span class="hljs-number">84</span>},
+        u: {keyCode: <span class="hljs-number">85</span>},
+        v: {keyCode: <span class="hljs-number">86</span>},
+        w: {keyCode: <span class="hljs-number">87</span>},
+        x: {keyCode: <span class="hljs-number">88</span>},
+        y: {keyCode: <span class="hljs-number">89</span>},
+        z: {keyCode: <span class="hljs-number">90</span>},
+        less_than: {keyCode: <span class="hljs-number">188</span>, shiftKey: <span class="hljs-literal">true</span>},
+        greater_than: {keyCode: <span class="hljs-number">190</span>, shiftKey: <span class="hljs-literal">true</span>},
     };</pre></div></div>
             
         </li>
@@ -285,10 +288,18 @@ characters can walk over the square (for example, a dirt or grass tile).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    rl.TileImgNoBlock = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
-        <span class="hljs-keyword">var</span> that = rl.TileImg(t);
+            <div class="content"><div class='highlight'><pre>    rl.TileImgNoBlock = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t, options)</span> </span>{
+        <span class="hljs-keyword">var</span> that = rl.TileImg(t), key;
+
+        options = options || {};
 
         that.blocking = <span class="hljs-literal">false</span>;
+
+        <span class="hljs-keyword">for</span> (key <span class="hljs-keyword">in</span> options) {
+            <span class="hljs-keyword">if</span> (options.hasOwnProperty(key)) {
+                that[key] = options[key];
+            }
+        }
 
         <span class="hljs-keyword">return</span> that;
     };</pre></div></div>
@@ -706,9 +717,22 @@ available immediately!</p>
         };
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Populate the blocking property for quick lookup.</p>
 
-    rl.updateBlocking = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.updateBlocking = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         blocking = {};
 
         tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
@@ -719,9 +743,23 @@ available immediately!</p>
         });
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Populate tiles_index, allowing for quick lookup of tiles at a
+particular (x, y) location.</p>
 
-    rl.updateTilesIndex = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.updateTilesIndex = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         tiles_index = {};
 
         tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
@@ -736,13 +774,15 @@ available immediately!</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
-              <p>Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm</p>
+              <p>Attempt to draw a line from one source tile to the other. If a line
+can be drawn, the path between the two tiles is clear of obstruction.
+Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm</p>
 
             </div>
             
@@ -772,9 +812,23 @@ available immediately!</p>
         }
 
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Iterate through all of the tiles to determine which ones are currently
+visible from the given (x, y) position.</p>
 
-    rl.updateVisible = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.updateVisible = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
         tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
             t.visible = <span class="hljs-literal">false</span>;
             <span class="hljs-keyword">if</span> (! rl.blockedLine(x, y, t.x, t.y)) {
@@ -784,57 +838,166 @@ available immediately!</p>
         });
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
-
-    rl.getKey = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{</pre></div></div>
+    };</pre></div></div>
             
         </li>
         
         
-        <li id="section-29">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
-              <p>todo: actually check for shift/control and return different
-keys if necessary</p>
+              <p>Compares a keypress event with an object of expected properties. If
+the event contains all of the properties specified in key, return
+true, otherwise false/</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">return</span> e.keyCode;
-    };
+            <div class="content"><div class='highlight'><pre>    rl.isKey = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e, key)</span> </span>{
+        <span class="hljs-keyword">var</span> k;
 
-    rl.setTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(new_tiles)</span> </span>{
+        <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> key) {
+            <span class="hljs-keyword">if</span> (key.hasOwnProperty(k) &amp;&amp; e[k] !== key[k]) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Set the current tiles array to new_tiles. Used, for example, when
+changing from one level to another.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.setTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(new_tiles)</span> </span>{
         tiles = new_tiles;
 
         rl.updateBlocking()
             .updateTilesIndex();
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-34">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-34">&#182;</a>
+              </div>
+              <p>Apply the given function to each of the tiles.</p>
 
-    rl.applyTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(f)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.applyTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(f)</span> </span>{
         tiles.forEach(f);
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-35">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-35">&#182;</a>
+              </div>
+              <p>Call fillRect directly on the 2d canvas context.</p>
 
-    rl.fillRect = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.fillRect = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> </span>{
         ctx.fillRect(x, y, width, height);
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-36">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-36">&#182;</a>
+              </div>
+              <p>Set the 2d context’s globalAlpha property (drawing opacity).</p>
 
-    rl.canvasWidth = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.globalAlpha = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x)</span> </span>{
+        x = x || <span class="hljs-number">1</span>;
+
+        ctx.globalAlpha = x;
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-37">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-37">&#182;</a>
+              </div>
+              <p>Return the width of the canvas, in pixels.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.canvasWidth = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> options.width * options.tileWidth;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-38">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-38">&#182;</a>
+              </div>
+              <p>Return the height of the canvas, in pixels.</p>
 
-    rl.canvasHeight = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.canvasHeight = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
         <span class="hljs-keyword">return</span> options.height * options.tileHeight;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-39">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-39">&#182;</a>
+              </div>
+              <p>Return an array containing all of the tiles at a given (x, y) position.
+Can optionally accept a tile array instead of using the tiles object.</p>
 
-    rl.tilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.tilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
         <span class="hljs-keyword">var</span> tile_return = [];
 
         tile_array = tile_array || tiles;
@@ -846,9 +1009,23 @@ keys if necessary</p>
         });
 
         <span class="hljs-keyword">return</span> tile_return;
-    };
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-40">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-40">&#182;</a>
+              </div>
+              <p>Remove all of the tiles at a given (x, y) position.
+Can optionally accept a tile array instead of using the tiles object.</p>
 
-    rl.removeTilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.removeTilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
         <span class="hljs-keyword">var</span> i;
 
         tile_array = tile_array || tiles;
@@ -858,6 +1035,43 @@ keys if necessary</p>
                 tile_array.splice(i, <span class="hljs-number">1</span>);
             }
         }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-41">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-41">&#182;</a>
+              </div>
+              <p>Iterate through the tiles array (or, optionally, a provided tile
+array), and retain only the last tile at each (x, y) position that
+does not have the blocking property set to false. For example, if
+there are two walls at a particular position, keep only the “top”
+one—the one that occurs later in the array.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.keepTopBlockingTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tile_array)</span> </span>{
+        <span class="hljs-keyword">var</span> i, found = {}, key;
+
+        tile_array = tile_array || tiles;
+
+        <span class="hljs-keyword">for</span> (i = tile_array.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i -= <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">if</span> (tile_array[i].blocking !== <span class="hljs-literal">false</span>) {
+                key = tile_array[i].x + <span class="hljs-string">','</span> + tile_array[i].y;
+                <span class="hljs-keyword">if</span> (found[key] !== <span class="hljs-literal">undefined</span>) {
+                    tile_array.splice(i, <span class="hljs-number">1</span>);
+                }
+                found[key] = <span class="hljs-literal">true</span>;
+            }
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
     };
 
     <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'keydown'</span>, rl.keydown);
