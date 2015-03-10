@@ -211,11 +211,16 @@ var generator = (function () {
                                  options.room_width + 1, y, lit);
     };
 
-    exports.generateShipUpper = function (lit, up, down) {
-        var tiles = [], options = {}, i, i_min, i_max, x_dist, tile_obj;
+    exports.generateShipUpper = function (lit, options) {
+        var tiles = [], i, i_min, i_max, x_dist, tile_obj,
+            options = options || {};
 
-        options.room_width = 5;
-        options.room_height = Math.floor((Math.random() * 5) + 5);
+        if (options.room_width === undefined) {
+            options.room_width = 5;
+        }
+        if (options.room_height === undefined) {
+            options.room_height = Math.floor((Math.random() * 5) + 5);
+        }
 
         i_min = -options.room_height * 2;
         i_max = options.room_height * 2;
@@ -260,7 +265,7 @@ var generator = (function () {
         }
 
         tiles.push({x: 0, y: options.room_height * 2 - 1,
-                    t: TileElevator(lit, up, down)});
+                    t: TileElevator(lit, options.up, options.down)});
 
         return {tiles: tiles, options: options};
     };
@@ -393,8 +398,12 @@ var game = (function () {
     setup = function () {
         var i, j;
 
-        map['ship01'] = generator.generateShipUpper(true, null, 'ship02');
-        map['ship02'] = generator.generateShipUpper(false, 'ship01', null);
+        map['ship01'] = generator.generateShipUpper(
+            true, {up: null, down: 'ship02'});
+        map['ship02'] = generator.generateShipUpper(
+            false, {up: 'ship01', down: null,
+                    room_width: map['ship01'].options.room_width,
+                    room_height: map['ship01'].options.room_height});
 
         state = 'ship01';
         resetPlayer();
@@ -427,7 +436,10 @@ var game = (function () {
             .write('s: move down', 1, 3)
             .write('a: move left', 1, 4)
             .write('d: move right', 1, 5)
-            .write('press a key to continue', 1, 7);
+            .write('e: interact/pick up', 1, 6)
+            .write('>: descend elevator', 1, 7)
+            .write('<: ascend elevator', 1, 8)
+            .write('press a key to continue', 1, 10);
     },
     renderGame = function () {
         rl.clear();
@@ -446,7 +458,7 @@ var game = (function () {
 
     keydownMap = function keydown(e) {
         var nx = player.x, ny = player.y;
-        //console.log(e);
+
         if (rl.isKey(e, rl.key.d)) {
             nx += 1;
             player.d = 'right';
@@ -460,9 +472,25 @@ var game = (function () {
             ny -= 1;
             player.d = 'up';
         } else if (rl.isKey(e, rl.key.less_than)) {
-            console.log('less than!');
+            rl.tilesAt(player.x, player.y).forEach(function (tile) {
+                if (map[tile.t.up] !== undefined) {
+                    state = tile.t.up;
+                    rl.setTiles(map[state].tiles);
+                    player.turn += 1;
+                    updateGame();
+                    render();
+                }
+            });
         } else if (rl.isKey(e, rl.key.greater_than)) {
-            console.log('greater than!');
+            rl.tilesAt(player.x, player.y).forEach(function (tile) {
+                if (map[tile.t.down] !== undefined) {
+                    state = tile.t.down;
+                    rl.setTiles(map[state].tiles);
+                    player.turn+= 1;
+                    updateGame();
+                    render();
+                }
+            });
         }
         if (rl.canMoveTo(nx, ny) && (nx !== player.x || ny !== player.y)) {
             player.x = nx;
