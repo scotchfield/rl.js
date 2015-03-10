@@ -69,6 +69,7 @@ the tile size, and so on. The defaults are listed here.</p>
         fontFillStyle: <span class="hljs-string">'#ffffff'</span>,
         textAlign: <span class="hljs-string">'center'</span>,
         imageSmoothingEnabled: <span class="hljs-literal">false</span>,
+        baseAlpha: <span class="hljs-number">0.3</span>,
     };</pre></div></div>
             
         </li>
@@ -224,18 +225,18 @@ image_id: the key associated with the cached image
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    rl.TileImg = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(image_id, x, y, width, height)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    rl.TileImg = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
         <span class="hljs-keyword">var</span> that = rl.TileBlocking();
 
-        that.image_id = image_id;
-        that.image_x = x;
-        that.image_y = y;
-        that.image_w = width;
-        that.image_h = height;
+        that.image_id = t.id;
+        that.image_x = t.x;
+        that.image_y = t.y;
+        that.image_w = t.w;
+        that.image_h = t.h;
 
         that.render = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
-            <span class="hljs-keyword">if</span> (images[image_id] !== <span class="hljs-literal">undefined</span>) {
-                ctx.drawImage(images[image_id],
+            <span class="hljs-keyword">if</span> (images[that.image_id] !== <span class="hljs-literal">undefined</span>) {
+                ctx.drawImage(images[that.image_id],
                               that.image_x, that.image_y,
                               that.image_w, that.image_h,
                               x * options.tileWidth, y * options.tileHeight,
@@ -246,23 +247,24 @@ image_id: the key associated with the cached image
         <span class="hljs-keyword">return</span> that;
     };
 
-    rl.TileImgFull = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(image_id, x, y, width, height, scale)</span> </span>{
+    rl.TileImgFull = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
         <span class="hljs-keyword">var</span> that = rl.TileBlocking();
 
-        that.image_id = image_id;
-        that.image_x = x;
-        that.image_y = y;
-        that.image_w = width;
-        that.image_h = height;
-        that.scale = scale;
+        that.image_id = t.id;
+        that.image_x = t.x;
+        that.image_y = t.y;
+        that.image_w = t.w;
+        that.image_h = t.h;
+        that.scale = t.scale || <span class="hljs-number">1</span>;
 
         that.render = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
-            <span class="hljs-keyword">if</span> (images[image_id] !== <span class="hljs-literal">undefined</span>) {
-                ctx.drawImage(images[image_id],
+            <span class="hljs-keyword">if</span> (images[that.image_id] !== <span class="hljs-literal">undefined</span>) {
+                ctx.drawImage(images[that.image_id],
                               that.image_x, that.image_y,
                               that.image_w, that.image_h,
                               x * options.tileWidth, y * options.tileHeight,
-                              that.image_w * scale, that.image_h * scale);
+                              that.image_w * that.scale,
+                              that.image_h * that.scale);
             }
         };
 
@@ -283,8 +285,8 @@ characters can walk over the square (for example, a dirt or grass tile).</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    rl.TileImgNoBlock = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(image_id, x, y, width, height)</span> </span>{
-        <span class="hljs-keyword">var</span> that = rl.TileImg(image_id, x, y, width, height);
+            <div class="content"><div class='highlight'><pre>    rl.TileImgNoBlock = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
+        <span class="hljs-keyword">var</span> that = rl.TileImg(t);
 
         that.blocking = <span class="hljs-literal">false</span>;
 
@@ -439,6 +441,9 @@ For example, rl.style(‘#ffffff’).write(‘Hello’, 0, 0) will write the
             </div>
             
             <div class="content"><div class='highlight'><pre>    rl.write = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(s, x, y)</span> </span>{
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> s !== <span class="hljs-string">'string'</span>) {
+            s = s.toString();
+        }
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; s.length; i += <span class="hljs-number">1</span>) {
             ctx.fillText(s[i],
                 (x + i + <span class="hljs-number">1</span>) * options.tileWidth - <span class="hljs-number">9</span>,
@@ -582,9 +587,6 @@ function called by create.</p>
         ctx.textAlign = options.textAlign;
 
         ctx.imageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.mozImageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.oImageSmoothingEnabled = options.imageSmoothingEnabled;
-        ctx.webkitImageSmoothingEnabled = options.imageSmoothingEnabled;
 
         <span class="hljs-keyword">return</span> canvas;
     };</pre></div></div>
@@ -629,7 +631,13 @@ x and y represent the top-left corner of the screen.</p>
         tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
             <span class="hljs-keyword">if</span> (t.x &gt;= x &amp;&amp; t.x &lt; x + options.width &amp;&amp;
                     t.y &gt;= y &amp;&amp; t.y &lt; y + options.height) {
-                t.t.render(t.x - x, t.y - y);
+                <span class="hljs-keyword">if</span> (options.alwaysShowTiles === <span class="hljs-literal">true</span> || t.visible !== <span class="hljs-literal">false</span>) {
+                    t.t.render(t.x - x, t.y - y);
+                } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (t.observed === <span class="hljs-literal">true</span>) {
+                    ctx.globalAlpha = options.baseAlpha;
+                    t.t.render(t.x - x, t.y - y);
+                    ctx.globalAlpha = <span class="hljs-number">1</span>;
+                }
             }
         });
 
@@ -723,9 +731,7 @@ available immediately!</p>
         });
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    };
-
-    rl.getKey = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{</pre></div></div>
+    };</pre></div></div>
             
         </li>
         
@@ -735,6 +741,61 @@ available immediately!</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    rl.blockedLine = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x0, y0, x1, y1)</span> </span>{
+        <span class="hljs-keyword">var</span> dx = <span class="hljs-built_in">Math</span>.abs(x1 - x0), sx = x0 &lt; x1 ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>,
+            dy = <span class="hljs-built_in">Math</span>.abs(y1 - y0), sy = y0 &lt; y1 ? <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>,
+            err = (dx &gt; dy ? dx : -dy) / <span class="hljs-number">2</span>,
+            err2;
+
+        <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+            <span class="hljs-keyword">if</span> (x0 === x1 &amp;&amp; y0 === y1) {
+                <span class="hljs-keyword">break</span>;
+            }
+            <span class="hljs-keyword">if</span> (blocking[x0][y0] === <span class="hljs-literal">true</span>) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+            }
+            err2 = err;
+            <span class="hljs-keyword">if</span> (err2 &gt; -dx) {
+                err -= dy;
+                x0 += sx;
+            }
+            <span class="hljs-keyword">if</span> (err2 &lt; dy) {
+                err += dx;
+                y0 += sy;
+            }
+
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    };
+
+    rl.updateVisible = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
+        tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
+            t.visible = <span class="hljs-literal">false</span>;
+            <span class="hljs-keyword">if</span> (! rl.blockedLine(x, y, t.x, t.y)) {
+                t.visible = <span class="hljs-literal">true</span>;
+                t.observed = <span class="hljs-literal">true</span>;
+            }
+        });
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    rl.getKey = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(e)</span> </span>{</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>todo: actually check for shift/control and return different
 keys if necessary</p>
@@ -751,7 +812,53 @@ keys if necessary</p>
             .updateTilesIndex();
 
         <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
-    }
+    };
+
+    rl.applyTiles = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(f)</span> </span>{
+        tiles.forEach(f);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    rl.fillRect = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> </span>{
+        ctx.fillRect(x, y, width, height);
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    };
+
+    rl.canvasWidth = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> options.width * options.tileWidth;
+    };
+
+    rl.canvasHeight = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{
+        <span class="hljs-keyword">return</span> options.height * options.tileHeight;
+    };
+
+    rl.tilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
+        <span class="hljs-keyword">var</span> tile_return = [];
+
+        tile_array = tile_array || tiles;
+
+        tile_array.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tile)</span> </span>{
+            <span class="hljs-keyword">if</span> (tile.x === x &amp;&amp; tile.y === y) {
+                tile_return.push(tile);
+            }
+        });
+
+        <span class="hljs-keyword">return</span> tile_return;
+    };
+
+    rl.removeTilesAt = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, tile_array)</span> </span>{
+        <span class="hljs-keyword">var</span> i;
+
+        tile_array = tile_array || tiles;
+
+        <span class="hljs-keyword">for</span> (i = tile_array.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i -= <span class="hljs-number">1</span>) {
+            <span class="hljs-keyword">if</span> (tile_array[i].x === x &amp;&amp; tile_array[i].y === y) {
+                tile_array.splice(i, <span class="hljs-number">1</span>);
+            }
+        }
+    };
 
     <span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">'keydown'</span>, rl.keydown);
 
