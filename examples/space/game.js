@@ -120,48 +120,47 @@ var generator = (function () {
         tiles.push({x: x, y: y, t: t});
     },
 
-    generateShipUpperHallway = function (tiles, options, x, y) {
+    generateShipUpperHallway = function (tiles, options, x, y, lit) {
         var i, j, x_offset = Math.floor(options.room_width * 0.5);
 
-        replaceTileWith(x - x_offset, y - 1, tiles, TileDoor(true));
-        replaceTileWith(x + x_offset, y - 1, tiles, TileDoor(true));
-        replaceTileWith(x - x_offset, y + 1, tiles, TileDoor(true));
-        replaceTileWith(x + x_offset, y + 1, tiles, TileDoor(true));
+        replaceTileWith(x - x_offset, y - 1, tiles, TileDoor(lit));
+        replaceTileWith(x + x_offset, y - 1, tiles, TileDoor(lit));
+        replaceTileWith(x - x_offset, y + 1, tiles, TileDoor(lit));
+        replaceTileWith(x + x_offset, y + 1, tiles, TileDoor(lit));
 
         for (i = -options.room_width + 1; i < options.room_width; i += 1) {
             tiles.push({x: x + i, y: y + 1 - options.room_height,
-                        t: TileWallHorizontal(true)});
+                        t: TileWallHorizontal(lit)});
             tiles.push({x: x + i, y: y - 1 + options.room_height,
-                        t: TileWallHorizontal(true)});
+                        t: TileWallHorizontal(lit)});
             for (j = y + 2 - options.room_height; j < y - 1; j += 1) {
-                tiles.push({x: x + i, y: j, t: TileGroundBlue()});
+                tiles.push({x: x + i, y: j, t: TileGroundBlue(lit)});
             }
             for (j = y - 2 + options.room_height; j > y + 1; j -= 1) {
-                tiles.push({x: x + i, y: j, t: TileGroundBlue()});
+                tiles.push({x: x + i, y: j, t: TileGroundBlue(lit)});
             }
         }
 
         for (i = y + 1 - options.room_height; i < y; i += 1) {
             if (i === y + 1 - options.room_height) {
-                tiles.push({x: x, y: i, t: TileWallTopT(true)});
+                tiles.push({x: x, y: i, t: TileWallTopT(lit)});
             } else if (i === y - 1) {
-                tiles.push({x: x, y: i, t: TileWallBottomT(true)});
+                tiles.push({x: x, y: i, t: TileWallBottomT(lit)});
             } else {
-                tiles.push({x: x, y: i, t: TileWallVertical(true)});
+                tiles.push({x: x, y: i, t: TileWallVertical(lit)});
             }
         }
         for (i = y - 1 + options.room_height; i > y; i -= 1) {
             if (i === y - 1 + options.room_height) {
-                tiles.push({x: x, y: i,t: TileWallBottomT(true)});
+                tiles.push({x: x, y: i,t: TileWallBottomT(lit)});
             } else if (i === y + 1) {
-                tiles.push({x: x, y: i,t: TileWallTopT(true)});
+                tiles.push({x: x, y: i,t: TileWallTopT(lit)});
             } else {
-                tiles.push({x: x, y: i, t: TileWallVertical(true)});
+                tiles.push({x: x, y: i, t: TileWallVertical(lit)});
             }
         }
-
     },
-    generateShipUpperQuad = function (tiles, options, x, y) {
+    generateShipUpperQuad = function (tiles, options, x, y, lit) {
         var i,
             i_min = -options.room_width * 2,
             i_max = options.room_width * 2;
@@ -172,37 +171,39 @@ var generator = (function () {
             rl.removeTilesAt(i, y + 1, tiles);
 
             if (i === -1) {
-                tiles.push({x: i, y: y - 1, t: TileWallBottomRight(true)});
-                tiles.push({x: i, y: y, t: TileGroundBlue()});
-                tiles.push({x: i, y: y + 1, t: TileWallTopRight(true)});
+                tiles.push({x: i, y: y - 1, t: TileWallBottomRight(lit)});
+                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y + 1, t: TileWallTopRight(lit)});
             } else if (i === 0) {
-                tiles.push({x: i, y: y - 1, t: TileGroundBlue()});
-                tiles.push({x: i, y: y, t: TileGroundBlue()});
-                tiles.push({x: i, y: y + 1, t: TileGroundBlue()});
+                tiles.push({x: i, y: y - 1, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y + 1, t: TileGroundBlue(lit)});
             } else if (i === 1) {
-                tiles.push({x: i, y: y - 1, t: TileWallBottomLeft(true)});
-                tiles.push({x: i, y: y, t: TileGroundBlue()});
-                tiles.push({x: i, y: y + 1, t: TileWallTopLeft(true)});
+                tiles.push({x: i, y: y - 1, t: TileWallBottomLeft(lit)});
+                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y + 1, t: TileWallTopLeft(lit)});
             } else if (i === i_min) {
-                tiles.push({x: i, y: y - 1, t: TileWallLeftT(true)});
-                tiles.push({x: i, y: y, t: TileWallVertical(true)});
-                tiles.push({x: i, y: y + 1, t: TileWallLeftT(true)});
+                tiles.push({x: i, y: y - 1, t: TileWallLeftT(lit)});
+                tiles.push({x: i, y: y, t: TileWallVertical(lit)});
+                tiles.push({x: i, y: y + 1, t: TileWallLeftT(lit)});
             } else if (i === i_max) {
-                tiles.push({x: i, y: y - 1, t: TileWallRightT(true)});
-                tiles.push({x: i, y: y, t: TileWallVertical(true)});
-                tiles.push({x: i, y: y + 1, t: TileWallRightT(true)});
+                tiles.push({x: i, y: y - 1, t: TileWallRightT(lit)});
+                tiles.push({x: i, y: y, t: TileWallVertical(lit)});
+                tiles.push({x: i, y: y + 1, t: TileWallRightT(lit)});
             } else {
-                tiles.push({x: i, y: y - 1, t: TileWallHorizontal(true)});
-                tiles.push({x: i, y: y, t: TileGroundBlue()});
-                tiles.push({x: i, y: y + 1, t: TileWallHorizontal(true)});
+                tiles.push({x: i, y: y - 1, t: TileWallHorizontal(lit)});
+                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y + 1, t: TileWallHorizontal(lit)});
             }
         };
 
-        generateShipUpperHallway(tiles, options, -(options.room_width + 1), y);
-        generateShipUpperHallway(tiles, options, options.room_width + 1, y);
+        generateShipUpperHallway(tiles, options,
+                                 -(options.room_width + 1), y, lit);
+        generateShipUpperHallway(tiles, options,
+                                 options.room_width + 1, y, lit);
     };
 
-    exports.generateShipUpper = function () {
+    exports.generateShipUpper = function (lit) {
         var tiles = [], options = {}, i, i_min, i_max, x_dist, tile_obj;
 
         options.room_width = 5;
@@ -213,37 +214,39 @@ var generator = (function () {
 
         for (i = i_min; i <= i_max; i += 1) {
             if (i === i_min) {
-                tiles.push({x: -1, y: i, t: TileWallTopT(true)});
-                tiles.push({x: 0, y: i, t: TileWallHorizontal(true)});
-                tiles.push({x: 1, y: i, t: TileWallTopT(true)});
+                tiles.push({x: -1, y: i, t: TileWallTopT(lit)});
+                tiles.push({x: 0, y: i, t: TileWallHorizontal(lit)});
+                tiles.push({x: 1, y: i, t: TileWallTopT(lit)});
             } else if (i === i_max) {
-                tiles.push({x: -1, y: i, t: TileWallBottomT(true)});
-                tiles.push({x: 0, y: i, t: TileWallHorizontal(true)});
-                tiles.push({x: 1, y: i, t: TileWallBottomT(true)});
+                tiles.push({x: -1, y: i, t: TileWallBottomT(lit)});
+                tiles.push({x: 0, y: i, t: TileWallHorizontal(lit)});
+                tiles.push({x: 1, y: i, t: TileWallBottomT(lit)});
             } else {
-                tiles.push({x: -1, y: i, t: TileWallVertical(true)});
-                tiles.push({x: 0, y: i, t: TileGroundBlue()});
-                tiles.push({x: 1, y: i, t: TileWallVertical(true)});
+                tiles.push({x: -1, y: i, t: TileWallVertical(lit)});
+                tiles.push({x: 0, y: i, t: TileGroundBlue(lit)});
+                tiles.push({x: 1, y: i, t: TileWallVertical(lit)});
             }
         }
 
-        generateShipUpperQuad(tiles, options, 0, -(options.room_height + 1));
-        generateShipUpperQuad(tiles, options, 0, options.room_height + 1);
+        generateShipUpperQuad(tiles, options,
+                              0, -(options.room_height + 1), lit);
+        generateShipUpperQuad(tiles, options,
+                              0, options.room_height + 1, lit);
 
         x_dist = options.room_width * 2;
 
         for (i = i_min; i <= i_max; i += 1) {
             if (i === i_min) {
-                replaceTileWith(-x_dist, i, tiles, TileWallTopLeft(true));
-                replaceTileWith(x_dist, i, tiles, TileWallTopRight(true));
+                replaceTileWith(-x_dist, i, tiles, TileWallTopLeft(lit));
+                replaceTileWith(x_dist, i, tiles, TileWallTopRight(lit));
             } else if (i === i_max) {
-                replaceTileWith(-x_dist, i, tiles, TileWallBottomLeft(true));
-                replaceTileWith(x_dist, i, tiles, TileWallBottomRight(true));
+                replaceTileWith(-x_dist, i, tiles, TileWallBottomLeft(lit));
+                replaceTileWith(x_dist, i, tiles, TileWallBottomRight(lit));
             } else {
                 tile_obj = rl.tilesAt(-options.room_width * 2, i, tiles);
                 if (tile_obj.length > 0 && tile_obj[0].t.blocking !== true) {
-                    replaceTileWith(-x_dist, i, tiles, TileWallVertical(true));
-                    replaceTileWith(x_dist, i, tiles, TileWallVertical(true));
+                    replaceTileWith(-x_dist, i, tiles, TileWallVertical(lit));
+                    replaceTileWith(x_dist, i, tiles, TileWallVertical(lit));
                 }
             }
         }
@@ -379,10 +382,13 @@ var game = (function () {
     setup = function () {
         var i, j;
 
-        state = 'map';
+        map['ship01'] = generator.generateShipUpper(true);
+        map['ship02'] = generator.generateShipUpper(false);
+
+        state = 'ship01';
         resetPlayer();
 
-        rl.setTiles(generator.generateShipUpper());
+        rl.setTiles(map[state]);
     },
 
     renderTitle = function () {
