@@ -121,6 +121,16 @@ var generator = (function () {
                               {id: 'floors', x: 72, y: 40, w: 8, h: 8});
         t.up = up;
         t.down = down;
+        t.onEnter = function (options) {
+            var st = 'This elevator can go ', d = [];
+            if (t.up !== null) {
+                d.push('up');
+            }
+            if (t.down !== null) {
+                d.push('down');
+            }
+            options.player.console.push(st + d.join(' and ') + '.');
+        };
         return t;
     },
 
@@ -167,6 +177,10 @@ var generator = (function () {
             } else {
                 tiles.push({x: x, y: i, t: TileWallVertical(lit)});
             }
+        }
+
+        for (i = 0; i < 4; i += 1) {
+            
         }
     },
     generateShipUpperQuad = function (tiles, options, x, y, lit) {
@@ -270,7 +284,17 @@ var generator = (function () {
 
         rl.keepTopBlockingTiles(tiles);
 
-        return {tiles: tiles, options: options};
+        return {tiles: tiles, options: options,
+                x: 0, y: options.room_height * 2 - 1};
+    };
+
+    exports.generateShipOpenFloor = function (lit, options) {
+        var tiles = [];
+
+        tiles.push({x: 0, y: 0,
+                    t: TileElevator(lit, options.up, options.down)});
+
+        return {tiles: tiles, options: options, x: 0, y: 0};
     };
 
     return exports;
@@ -435,9 +459,11 @@ var game = (function () {
         map['ship01'] = generator.generateShipUpper(
             true, {up: null, down: 'ship02'});
         map['ship02'] = generator.generateShipUpper(
-            false, {up: 'ship01', down: null,
+            false, {up: 'ship01', down: 'open01',
                     room_width: map['ship01'].options.room_width,
                     room_height: map['ship01'].options.room_height});
+        map['open01'] = generator.generateShipOpenFloor(
+            false, {up: 'ship02', down: null});
 
         state = 'ship01';
         resetPlayer();
@@ -511,13 +537,22 @@ var game = (function () {
         } else if (rl.isKey(e, rl.key.w)) {
             ny -= 1;
             player.d = 'up';
-        } else if (rl.isKey(e, rl.key.u)) {
+        } else if (rl.isKey(e, rl.key.e)) {
+            // todo: interact with a thing on the ground or in front of you
             player.console.push('Nothing here.');
         } else if (rl.isKey(e, rl.key.less_than)) {
             rl.tilesAt(player.x, player.y).forEach(function (tile) {
                 if (map[tile.t.up] !== undefined) {
                     state = tile.t.up;
                     rl.setTiles(map[state].tiles);
+                    if (map[state].x !== undefined) {
+                        player.x = map[state].x;
+                        nx = player.x;
+                    }
+                    if (map[state].y !== undefined) {
+                        player.y = map[state].x;
+                        ny = player.y;
+                    }
                     player.turn += 1;
                     player.console.push('You go up one level.');
                     updateGame();
@@ -546,6 +581,9 @@ var game = (function () {
                 if (tile.t.lit === true) {
                     lit = true;
                 }
+                if (tile.t.onEnter !== undefined) {
+                    tile.t.onEnter({player: player});
+                };
             });
             if (lit === true) {
                 player.shadow_turn = Math.max(0, player.shadow_turn - 5);
