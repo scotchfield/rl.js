@@ -420,7 +420,7 @@ var rl = (function () {
             if (x0 === x1 && y0 === y1) {
                 break;
             }
-            if (blocking[x0][y0] === true) {
+            if (blocking[x0] && blocking[x0][y0] === true) {
                 return true;
             }
             err2 = err;
@@ -443,7 +443,7 @@ var rl = (function () {
     rl.updateVisible = function (x, y) {
         tiles.forEach(function (t) {
             t.visible = false;
-            if (! rl.blockedLine(x, y, t.x, t.y)) {
+            if (!rl.blockedLine(x, y, t.x, t.y)) {
                 t.visible = true;
                 t.observed = true;
             }
