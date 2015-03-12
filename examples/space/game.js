@@ -415,11 +415,6 @@ var game = (function () {
         rl.updateTilesIndex()
             .updateBlocking()
             .updateVisible(player.x, player.y);
-        /*rl.applyTiles(function (t) {
-            if (t.t.setLit) {
-                t.t.setLit(Math.random() > 0.5 ? true : false);
-            }
-        });/**/
     },
     renderStars = function () {
         stars.forEach(function (star) {
@@ -550,7 +545,7 @@ var game = (function () {
                         nx = player.x;
                     }
                     if (map[state].y !== undefined) {
-                        player.y = map[state].x;
+                        player.y = map[state].y;
                         ny = player.y;
                     }
                     player.turn += 1;
@@ -564,6 +559,14 @@ var game = (function () {
                 if (map[tile.t.down] !== undefined) {
                     state = tile.t.down;
                     rl.setTiles(map[state].tiles);
+                    if (map[state].x !== undefined) {
+                        player.x = map[state].x;
+                        nx = player.x;
+                    }
+                    if (map[state].y !== undefined) {
+                        player.y = map[state].y;
+                        ny = player.y;
+                    }
                     player.turn += 1;
                     player.console.push('You descend one level.');
                     updateGame();
