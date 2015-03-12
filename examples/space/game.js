@@ -44,7 +44,7 @@ var generator = (function () {
 
             that.image_id = t.id;
             that.image_x = t.x;
-                that.image_y = t.y;
+            that.image_y = t.y;
             that.image_width = t.w;
             that.image_height = t.h;
         };
@@ -62,8 +62,9 @@ var generator = (function () {
         return rl.TileImg({id: 'floors', x: 32, y: 8, w: 8, h: 8});
     },
     TileGroundBlue = function (lit) {
-        return rl.TileImgNoBlock({id: 'floors', x: 0, y: 48, w: 8, h: 8},
-                                 {lit: lit});
+        return TileToggleLitNoBlock(lit,
+                                    {id: 'floors', x: 16, y: 40, w: 8, h: 8},
+                                    {id: 'floors', x: 0, y: 48, w: 8, h: 8});
     },
     TileWallTopLeft = function (lit) {
         return TileToggleLit(lit,
@@ -133,6 +134,39 @@ var generator = (function () {
         };
         return t;
     },
+    TileWallLightTop = function (lit) {
+        var t = TileToggleLit(lit,
+                              {id: 'floors', x: 8, y: 0, w: 8, h: 8},
+                              {id: 'floors', x: 48, y: 0, w: 8, h: 8});
+        t.light_toggle = true;
+        t.lighting = lit;
+        return t;
+    },
+    TileWallLightBottom = function (lit) {
+        var t = TileToggleLit(lit,
+                              {id: 'floors', x: 8, y: 16, w: 8, h: 8},
+                              {id: 'floors', x: 48, y: 16, w: 8, h: 8});
+        t.light_toggle = true;
+        t.lighting = lit;
+        return t;
+    },
+    TileWallLightLeft = function (lit) {
+        var t = TileToggleLit(lit,
+                              {id: 'floors', x: 8, y: 24, w: 8, h: 8},
+                              {id: 'floors', x: 48, y: 24, w: 8, h: 8});
+        t.light_toggle = true;
+        t.lighting = lit;
+        return t;
+    },
+    TileWallLightRight = function (lit) {
+        var t = TileToggleLit(lit,
+                              {id: 'floors', x: 8, y: 8, w: 8, h: 8},
+                              {id: 'floors', x: 48, y: 8, w: 8, h: 8});
+        t.light_toggle = true;
+        t.lighting = lit;
+        return t;
+    },
+
 
     replaceTileWith = function (x, y, tiles, t) {
         rl.removeTilesAt(x, y, tiles);
@@ -152,6 +186,14 @@ var generator = (function () {
                         t: TileWallHorizontal(lit)});
             tiles.push({x: x + i, y: y - 1 + options.room_height,
                         t: TileWallHorizontal(lit)});
+            if (Math.random() > 0.5) {
+                tiles.push({x: x + i, y: y + 1 - options.room_height,
+                            t: TileWallLightTop(lit)});
+            }
+            if (Math.random() > 0.5) {
+                tiles.push({x: x + i, y: y - 1 + options.room_height,
+                            t: TileWallLightBottom(lit)});
+            }
             for (j = y + 2 - options.room_height; j < y - 1; j += 1) {
                 tiles.push({x: x + i, y: j, t: TileGroundBlue(lit)});
             }
@@ -570,8 +612,38 @@ var game = (function () {
             ny -= 1;
             player.d = 'up';
         } else if (rl.isKey(e, rl.key.e)) {
-            // todo: interact with a thing on the ground or in front of you
-            player.console.push('Nothing here.');
+            var found = false, px = player.x, py = player.y;
+            if (player.d === 'right') {
+                px = player.x + 1;
+            } else if (player.d === 'left') {
+                px = player.x - 1;
+            } else if (player.d === 'down') {
+                py = player.y + 1;
+            } else if (player.d === 'up') {
+                py = player.y - 1;
+                tiles = rl.tilesAt(player.x, player.y - 1);
+            }
+
+            // todo: don't do it this way, set up light sources and then do
+            // a lighting pass, don't define everything to lit right away!
+            rl.tilesAt(px, py).forEach(function (tile) {
+                if (tile.t.light_toggle) {
+                    console.log(tile.t.lit);
+                    tile.t.lit = !tile.t.lit;
+                    player.console.push('You hit the light switch.');
+                    rl.applyTiles(function (t) {
+                        if (!rl.blockedLine(player.x, player.y, t.x, t.y)) {
+                            if (typeof t.t.setLit === 'function') {
+                                t.t.setLit(tile.t.lit);
+                            }
+                        }
+                    });
+                    found = true;
+                }
+            });
+            if (!found) {
+                player.console.push('Nothing here.');
+            }
         } else if (rl.isKey(e, rl.key.less_than)) {
             rl.tilesAt(player.x, player.y).forEach(function (tile) {
                 if (map[tile.t.up] !== undefined) {
