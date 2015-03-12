@@ -440,10 +440,17 @@ var rl = (function () {
 
     // Iterate through all of the tiles to determine which ones are currently
     // visible from the given (x, y) position.
-    rl.updateVisible = function (x, y) {
+    rl.updateVisible = function (x, y, dist) {
         tiles.forEach(function (t) {
             t.visible = false;
             if (!rl.blockedLine(x, y, t.x, t.y)) {
+                if (dist !== undefined) {
+                    var d = Math.sqrt(Math.pow(x - t.x, 2) +
+                                      Math.pow(y - t.y, 2));
+                    if (d > dist) {
+                        return;
+                    }
+                }
                 t.visible = true;
                 t.observed = true;
             }
