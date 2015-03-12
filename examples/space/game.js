@@ -289,7 +289,38 @@ var generator = (function () {
     };
 
     exports.generateShipOpenFloor = function (lit, options) {
-        var tiles = [];
+        var tiles = [], i, j;
+
+        options.room_radius = Math.floor((Math.random() * 20) + 10);
+
+        for (i = -options.room_radius; i <= options.room_radius; i += 1) {
+            for (j = -options.room_radius; j <= options.room_radius; j += 1) {
+                if (j === -options.room_radius) {
+                    if (i === -options.room_radius) {
+                        tiles.push({x: i, y: j, t: TileWallTopLeft(lit)});
+                    } else if (i === options.room_radius) {
+                        tiles.push({x: i, y: j, t: TileWallTopRight(lit)});
+                    } else {
+                        tiles.push({x: i, y: j, t: TileWallHorizontal(lit)});
+                    }
+                } else if (j === options.room_radius) {
+                    if (i === -options.room_radius) {
+                        tiles.push({x: i, y: j, t: TileWallBottomLeft(lit)});
+                    } else if (i === options.room_radius) {
+                        tiles.push({x: i, y: j, t: TileWallBottomRight(lit)});
+                    } else {
+                        tiles.push({x: i, y: j, t: TileWallHorizontal(lit)});
+                    }
+                } else {
+                    if (i === -options.room_radius ||
+                            i === options.room_radius) {
+                        tiles.push({x: i, y: j, t: TileWallVertical(lit)});
+                    } else {
+                        tiles.push({x: i, y: j, t: TileGroundBlue(lit)});
+                    }
+                }
+            }
+        }
 
         tiles.push({x: 0, y: 0,
                     t: TileElevator(lit, options.up, options.down)});
@@ -414,7 +445,7 @@ var game = (function () {
     updateGame = function () {
         rl.updateTilesIndex()
             .updateBlocking()
-            .updateVisible(player.x, player.y);
+            .updateVisible(player.x, player.y, 10);
     },
     renderStars = function () {
         stars.forEach(function (star) {
@@ -458,7 +489,13 @@ var game = (function () {
                     room_width: map['ship01'].options.room_width,
                     room_height: map['ship01'].options.room_height});
         map['open01'] = generator.generateShipOpenFloor(
-            false, {up: 'ship02', down: null});
+            false, {up: 'ship02', down: 'open02'});
+        map['open02'] = generator.generateShipOpenFloor(
+            false, {up: 'open01', down: 'open03'});
+        map['open03'] = generator.generateShipOpenFloor(
+            false, {up: 'open02', down: 'open04'});
+        map['open04'] = generator.generateShipOpenFloor(
+            false, {up: 'open03', down: null});
 
         state = 'ship01';
         resetPlayer();
