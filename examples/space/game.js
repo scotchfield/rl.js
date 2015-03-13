@@ -182,13 +182,15 @@ var generator = (function () {
                         t: TileWallHorizontal()});
             tiles.push({x: x + i, y: y - 1 + options.room_height,
                         t: TileWallHorizontal()});
-            if (Math.random() > 0.5) {
-                tiles.push({x: x + i, y: y + 1 - options.room_height,
-                            t: TileWallLightTop(lit)});
-            }
-            if (Math.random() > 0.5) {
-                tiles.push({x: x + i, y: y - 1 + options.room_height,
-                            t: TileWallLightBottom(lit)});
+            if (i > -options.room_width + 1 && i < options.room_width - 1) {
+                if (Math.random() > 0.3) {
+                    tiles.push({x: x + i, y: y + 1 - options.room_height,
+                                t: TileWallLightTop(lit)});
+                }
+                if (Math.random() > 0.3) {
+                    tiles.push({x: x + i, y: y - 1 + options.room_height,
+                                t: TileWallLightBottom(lit)});
+                }
             }
             for (j = y + 2 - options.room_height; j < y - 1; j += 1) {
                 tiles.push({x: x + i, y: j, t: TileGroundBlue()});
