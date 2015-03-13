@@ -184,6 +184,7 @@ var generator = (function () {
             'Scott Grant',
             'Chris Hicks, Heritage',
             'Zap Jackson',
+            'Biff Bartles',
         ];
 
         return names[Math.floor(Math.random() * names.length)];
@@ -485,6 +486,7 @@ var game = (function () {
             console: [],
             light_sources: 0,
             power: 100000,
+            game_over: false,
         };
     },
 
@@ -573,7 +575,16 @@ var game = (function () {
             .updateVisible(player.x, player.y, 10);
         player.power -= player.light_sources;
         player.power -= 10; // constant drain
-        console.log(player.light_sources);
+        if (player.shadow_turn === 60) {
+            player.console.push('You hear a noise in the darkness.');
+        } else if (player.shadow_turn === 120) {
+            player.console.push('Something is getting closer..');
+        } else if (player.shadow_turn >= 180) {
+            player.console.push('Something crawls out of the shadow!');
+            player.console.push('You died. Press space.');
+            player.win = false;
+            player.game_over = true;
+        }
     },
     renderStars = function () {
         stars.forEach(function (star) {
@@ -649,9 +660,9 @@ var game = (function () {
         renderStars();
         rl.render(0, 0)
             .style('#ffffff')
-            .write('spaceRL', 1, 1)
+            .write('lightless', 1, 1)
             .style('#cccccc')
-            .write('press a key to continue', 1, 2);
+            .write('press a key to continue', 1, 3);
     },
     renderStory = function () {
         rl.clear();
@@ -672,34 +683,63 @@ var game = (function () {
             .write('PRIORITIZE ENERGY CONVERSATION', 1, 15)
             .write('LOW POWER WILL RESULT IN SELF-DESTRUCT', 1, 16)
             .style('#ffffff').write('that\'s not good..', 1, 18)
-            .write('you grab two flares from an emergency', 1, 20)
-            .write('panel, and start to walk to the door.', 1, 21)
+            .write('you start to walk to the door.', 1, 20)
             .style('#6666ff')
-            .write('a strange noise, almost delicate at', 1, 23)
-            .write('first, starts to creep into the room.', 1, 24)
-            .write('it scratches, like coarse metal', 1, 25)
-            .write('against bone..', 1, 26)
+            .write('a strange noise, almost delicate at', 1, 22)
+            .write('first, starts to creep into the room.', 1, 23)
+            .write('it scratches, like coarse metal', 1, 24)
+            .write('against bone..', 1, 25)
             .style('#ffffff')
-            .write('was that.. from inside the walls?', 1, 28)
-            .write('there\'s something out there.', 1, 30)
-            .write('better not stay in the dark for long.', 1, 32);
-        // todo: timer fade in story elements
+            .write('was that.. from inside the walls?', 1, 27)
+            .write('there\'s something out there.', 1, 29)
+            .write('better not stay in the dark for long.', 1, 31);
     },
     renderInstructions = function () {
         rl.clear();
         renderStars();
         rl.style('#ffffff')
             .write('instructions', 27, 1)
-            .style('#cccccc')
-            .write('w: move up', 1, 2)
-            .write('s: move down', 1, 3)
-            .write('a: move left', 1, 4)
-            .write('d: move right', 1, 5)
-            .write('e: interact/pick up', 1, 6)
-            .write('>: descend elevator', 1, 7)
-            .write('<: ascend elevator', 1, 8)
-            .write('h: help', 1, 10)
+            .style('#9999ff')
+            .write('w', 1, 2)
+            .write('s', 1, 3)
+            .write('a', 1, 4)
+            .write('d', 1, 5)
+            .write('e', 1, 6)
+            .write('>', 1, 7)
+            .write('<', 1, 8)
+            .write('h', 1, 10)
+            .style('#ffffff')
+            .write(': move up', 2, 2)
+            .write(': move down', 2, 3)
+            .write(': move left', 2, 4)
+            .write(': move right', 2, 5)
+            .write(': interact/pick up', 2, 6)
+            .write(': descend elevator', 2, 7)
+            .write(': ascend elevator', 2, 8)
+            .write(': help', 2, 10)
             .write('press a key to continue', 1, 12);
+    },
+    renderEnd = function () {
+        var power;
+
+        rl.clear();
+        renderStars();
+        if (player.win === true) {
+            rl.style('#ff6666')
+                .write('You escaped!', 1, 1);
+        } else {
+            rl.style('#ff6666')
+                .write('You died.', 1, 1);
+        }
+        power = Math.floor(player.power / 100) / 10;
+
+        rl.style('#ffffff')
+            .write('Time:', 1, 3)
+            .write('Power:', 1, 4)
+            .write('Press a key to continue', 1, 6)
+            .style('#6666ff')
+            .write(toClock(player.turn), 7, 3)
+            .write(power + '%', 8, 4);
     },
     renderGame = function () {
         rl.clear();
@@ -718,6 +758,16 @@ var game = (function () {
 
     keydownMap = function keydown(e) {
         var nx = player.x, ny = player.y, lit;
+
+        if (player.game_over === true) {
+            if (rl.isKey(e, rl.key.space)) {
+                rl.unregisterKeydown(keydown)
+                    .registerKeydown(keydownEnd);
+                render_cb.removeCb(renderGame)
+                    .push(renderEnd);
+            }
+            return;
+        }
 
         if (rl.isKey(e, rl.key.h)) {
             rl.unregisterKeydown(keydownMap)
@@ -776,7 +826,10 @@ var game = (function () {
                     if (player.keycard === undefined) {
                         player.console.push('You need a keycard to escape!');
                     } else {
-                        player.console.push('You win.');
+                        player.console.push('You jump into the escape pod!.');
+                        player.console.push('You win! Press space.');
+                        player.game_over = true;
+                        player.win = true;
                     }
                     found = true;
                 }
@@ -870,6 +923,15 @@ var game = (function () {
         render_cb.removeCb(renderInstructions)
             .push(renderGame);
         updateGame();
+        render();
+    },
+    keydownEnd = function keydown(e) {
+        rl.unregisterKeydown(keydown)
+            .registerKeydown(keydownTitle);
+        render_cb.removeCb(renderEnd)
+            .push(renderTitle);
+        rl.tiles([]);
+        loadImagePlanet();
         render();
     };
 
