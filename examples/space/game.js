@@ -437,6 +437,7 @@ var game = (function () {
             },
             console: [],
             light_sources: 0,
+            power: 100000,
         };
     },
 
@@ -513,6 +514,8 @@ var game = (function () {
         rl.updateTilesIndex()
             .updateBlocking()
             .updateVisible(player.x, player.y, 10);
+        player.power -= player.light_sources;
+        console.log(player.light_sources);
     },
     renderStars = function () {
         stars.forEach(function (star) {
@@ -522,11 +525,12 @@ var game = (function () {
         });
     },
     renderHUD = function () {
-        var i;
+        var i, power;
 
         rl.style('rgb(255,255,255)')
             .globalAlpha(0.25)
-            .fillRect(0, 0, width * options.tileWidth, options.tileHeight + 2)
+            .fillRect(0, 0, width * options.tileWidth,
+                      (options.tileHeight * 2) + 2)
             .fillRect(0, (height - 4) * options.tileHeight,
                       width * options.tileWidth, options.tileHeight * 4)
             .globalAlpha();
@@ -537,10 +541,14 @@ var game = (function () {
                 .write(player.console[i], 0, height - 4 + i);
         };
 
+        power = Math.floor(player.power / 100) / 10;
+
         rl.style('#ffffff')
             .write(toClock(player.turn), 1, 0)
             .style('#ff0000')
-            .write(toClock(player.shadow_turn, false), 34, 0);
+            .write(toClock(player.shadow_turn, false), 34, 0)
+            .style('#ffffff')
+            .write('power: ' + power + '%', 1, 1);
 
         rl.style('#888888')
             .write('h: help', 32, height - 5);
@@ -590,6 +598,35 @@ var game = (function () {
             .write('press a key to continue', 1, 2);
     },
     renderStory = function () {
+        rl.clear();
+        renderStars();
+        rl.style('#ffffff')
+            .write('your head aches..', 1, 1)
+            .write('something happened.. an ', 1, 3)
+            .style('#ff6666').write('explosion', 25, 3).style('#ffffff')
+            .write('?', 34, 3)
+            .write('you stumble to consciousness, alone in', 1, 5)
+            .write('your room. the spaceship rocks back', 1, 6)
+            .write('and forth unnaturally, and you', 1, 7)
+            .write('cautiously rise to your feet.', 1, 8)
+            .write('the lights flicker. you stare at a', 1, 10)
+            .write('console on the wall, struggling to', 1, 11)
+            .write('parse the warning message.', 1, 12)
+            .style('#ff6666').write('POWER LEVEL CRITICAL', 1, 14)
+            .write('PRIORITIZE ENERGY CONVERSATION', 1, 15)
+            .write('LOW POWER WILL RESULT IN SELF-DESTRUCT', 1, 16)
+            .style('#ffffff').write('that\'s not good..', 1, 18)
+            .write('you grab two flares from an emergency', 1, 20)
+            .write('panel, and start to walk to the door.', 1, 21)
+            .style('#6666ff')
+            .write('a strange noise, almost delicate at', 1, 23)
+            .write('first, starts to creep into the room.', 1, 24)
+            .write('it scratches, like coarse metal', 1, 25)
+            .write('against bone..', 1, 26)
+            .style('#ffffff')
+            .write('was that.. from inside the walls?', 1, 28)
+            .write('there\'s something out there.', 1, 30)
+            .write('better not stay in the dark for long.', 1, 32);
         // todo: timer fade in story elements
     },
     renderInstructions = function () {
@@ -659,6 +696,11 @@ var game = (function () {
             rl.tilesAt(px, py).forEach(function (tile) {
                 if (tile.t.light_toggle) {
                     tile.t.setLit(!tile.t.lit);
+                    if (tile.t.lit) {
+                        player.light_sources += 1;
+                    } else if (!tile.t.lit) {
+                        player.light_sources -= 1;
+                    }
                     player.console.push('You hit the light switch.');
                     updateLighting();
                     found = true;
@@ -733,10 +775,17 @@ var game = (function () {
     keydownTitle = function keydown(e) {
         rl.setTiles([])
             .unregisterKeydown(keydown)
-            .registerKeydown(keydownInstructions);
+            .registerKeydown(keydownStory);
         render_cb.removeCb(renderTitle)
-            .push(renderInstructions);
+            .push(renderStory);
         setup();
+        render();
+    },
+    keydownStory = function keydown(e) {
+        rl.unregisterKeydown(keydown)
+            .registerKeydown(keydownInstructions);
+        render_cb.removeCb(renderStory)
+            .push(renderInstructions);
         render();
     },
     keydownInstructions = function keydown(e) {
