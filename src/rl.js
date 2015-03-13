@@ -32,6 +32,7 @@ var rl = (function () {
     // properties provided to match. For example, in the code below,
     // matching keyCode 65 will match 'a' and 'A'.
     rl.key = {
+        space: {keyCode: 32},
         left: {keyCode: 37},
         up: {keyCode: 38},
         right: {keyCode: 39},
