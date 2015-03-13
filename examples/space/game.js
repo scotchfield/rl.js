@@ -485,7 +485,7 @@ var game = (function () {
             },
             console: [],
             light_sources: 0,
-            power: 100000,
+            power: 50000,
             game_over: false,
         };
     },
@@ -575,12 +575,19 @@ var game = (function () {
             .updateVisible(player.x, player.y, 10);
         player.power -= player.light_sources;
         player.power -= 10; // constant drain
+        player.power = Math.max(player.power, 0);
         if (player.shadow_turn === 60) {
             player.console.push('You hear a noise in the darkness.');
         } else if (player.shadow_turn === 120) {
             player.console.push('Something is getting closer..');
         } else if (player.shadow_turn >= 180) {
             player.console.push('Something crawls out of the shadow!');
+            player.console.push('You died. Press space.');
+            player.win = false;
+            player.game_over = true;
+        } else if (player.power <= 0) {
+            player.console.push('The power fails, and the ship begins');
+            player.console.push('to self-destruct!');
             player.console.push('You died. Press space.');
             player.win = false;
             player.game_over = true;
@@ -641,6 +648,7 @@ var game = (function () {
 
         state = 'ship01';
         resetPlayer();
+        player.power += Math.floor(Math.random() * 10000);
 
         for (i in map) {
             if (map[i].light_sources !== undefined) {
@@ -756,6 +764,43 @@ var game = (function () {
         );
     },
 
+    processTile = function (tile) {
+        var found = false;
+        if (tile.t.light_toggle) {
+            tile.t.setLit(!tile.t.lit);
+            if (tile.t.lit) {
+                player.light_sources += 1;
+            } else if (!tile.t.lit) {
+                player.light_sources -= 1;
+            }
+            player.console.push('You hit the light switch.');
+            updateLighting();
+            found = true;
+        } else if (tile.t.name) {
+            player.console.push(getCorpseEulogy(tile.t.name));
+            found = true;
+        } else if (tile.t.keycard) {
+            if (player.keycard === undefined) {
+                player.keycard = true;
+                player.console.push('You pick up a keycard copy.');
+            } else {
+                player.console.push('You already have the keycard.');
+            }
+            found = true;
+        } else if (tile.t.escape) {
+            if (player.keycard === undefined) {
+                        player.console.push('You need a keycard to escape!');
+            } else {
+                player.console.push('You jump into the escape pod!.');
+                player.console.push('You win! Press space.');
+                player.game_over = true;
+                player.win = true;
+            }
+            found = true;
+        }
+        return found;
+    },
+
     keydownMap = function keydown(e) {
         var nx = player.x, ny = player.y, lit;
 
@@ -800,43 +845,16 @@ var game = (function () {
             }
 
             rl.tilesAt(px, py).forEach(function (tile) {
-                if (tile.t.light_toggle) {
-                    tile.t.setLit(!tile.t.lit);
-                    if (tile.t.lit) {
-                        player.light_sources += 1;
-                    } else if (!tile.t.lit) {
-                        player.light_sources -= 1;
-                    }
-                    player.console.push('You hit the light switch.');
-                    updateLighting();
-                    found = true;
-                } else if (tile.t.name) {
-                    console.log(tile);
-                    player.console.push(getCorpseEulogy(tile.t.name));
-                    found = true;
-                } else if (tile.t.keycard) {
-                    if (player.keycard === undefined) {
-                        player.keycard = true;
-                        player.console.push('You pick up a keycard copy.');
-                    } else {
-                        player.console.push('You already have the keycard.');
-                    }
-                    found = true;
-                } else if (tile.t.escape) {
-                    if (player.keycard === undefined) {
-                        player.console.push('You need a keycard to escape!');
-                    } else {
-                        player.console.push('You jump into the escape pod!.');
-                        player.console.push('You win! Press space.');
-                        player.game_over = true;
-                        player.win = true;
-                    }
-                    found = true;
-                }
-                console.log(tile);
+                found = processTile(tile);
             });
+
             if (!found) {
-                player.console.push('Nothing here.');
+                rl.tilesAt(player.x, player.y).forEach(function (tile) {
+                    found = processTile(tile);
+                });
+                if (!found) {
+                    player.console.push('Nothing here.');
+                }
             }
         } else if (rl.isKey(e, rl.key.less_than)) {
             rl.tilesAt(player.x, player.y).forEach(function (tile) {
