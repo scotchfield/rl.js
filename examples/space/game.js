@@ -28,8 +28,8 @@ var generator = (function () {
         return that;
     },
 
-    TileToggleLitNoBlock = function (lit, t_lit, t_unlit) {
-        var that = rl.TileImgNoBlock(t_lit);
+    TileToggleLitNoBlock = function (lit, t_lit, t_unlit, options) {
+        var that = rl.TileImgNoBlock(t_lit, options);
 
         that.lit = lit;
         that.setLit = function (lit) {
@@ -64,7 +64,8 @@ var generator = (function () {
     TileGroundBlue = function (lit) {
         return TileToggleLitNoBlock(lit,
                                     {id: 'floors', x: 16, y: 40, w: 8, h: 8},
-                                    {id: 'floors', x: 0, y: 48, w: 8, h: 8});
+                                    {id: 'floors', x: 0, y: 48, w: 8, h: 8},
+                                    {blue: true});
     },
     TileWallTopLeft = function (lit) {
         return TileToggleLit(lit,
@@ -162,11 +163,47 @@ var generator = (function () {
         t.light_toggle = true;
         return t;
     },
+    TileEscapePod = function (lit) {
+        return rl.TileImgNoBlock({id: 'floors', x: 40, y: 40, w: 8, h: 8},
+                                 {escape: true});
+    },
+    TileKeycard = function () {
+        return rl.TileImgNoBlock({id: 'items', x: 64, y: 0, w: 8, h: 8},
+                                 {keycard: true});
+    },
+    TileLetter = function () {
+        return rl.TileImgNoBlock({id: 'items', x: 0, y: 0, w: 8, h: 8});
+    },
+    TileCorpse = function () {
+        return rl.TileImgNoBlock({id: 'player', x: 32, y: 0, w: 8, h: 8},
+            {name: getCorpseName()});
+    },
 
+    getCorpseName = function () {
+        var names = [
+            'Scott Grant',
+            'Chris Hicks, Heritage',
+            'Zap Jackson',
+        ];
+
+        return names[Math.floor(Math.random() * names.length)];
+    },
 
     replaceTileWith = function (x, y, tiles, t) {
         rl.removeTilesAt(x, y, tiles);
         tiles.push({x: x, y: y, t: t});
+    },
+    addOnBlueTile = function (tiles, t) {
+        var t_add;
+        while (true) {
+            t_add = tiles[Math.floor(Math.random() * tiles.length)];
+            if (t_add.t.blue === true) {
+                if (rl.tilesAt(t_add.x, t_add.y, tiles).length === 1) {
+                    tiles.push({x: t_add.x, y: t_add.y, t: t});
+                    break;
+                }
+            }
+        }
     },
 
     generateShipUpperHallway = function (tiles, options, x, y, lit) {
@@ -194,6 +231,9 @@ var generator = (function () {
             }
             for (j = y + 2 - options.room_height; j < y - 1; j += 1) {
                 tiles.push({x: x + i, y: j, t: TileGroundBlue()});
+                /*if (Math.random() < 0.2) {
+                    tiles.push({x: x + i, y: j, t: TileCorpse()});
+                }*/
             }
             for (j = y - 2 + options.room_height; j > y + 1; j -= 1) {
                 tiles.push({x: x + i, y: j, t: TileGroundBlue()});
@@ -217,10 +257,6 @@ var generator = (function () {
             } else {
                 tiles.push({x: x, y: i, t: TileWallVertical()});
             }
-        }
-
-        for (i = 0; i < 4; i += 1) {
-            
         }
     },
     generateShipUpperQuad = function (tiles, options, x, y, lit) {
@@ -324,6 +360,10 @@ var generator = (function () {
 
         rl.keepTopBlockingTiles(tiles);
 
+        for (i = 0; i < 10; i += 1) {
+            addOnBlueTile(tiles, TileCorpse());
+        }
+
         tiles.forEach(function (t) {
             if (t.t.light_toggle && t.t.lit) {
                 light_sources += 1;
@@ -371,6 +411,13 @@ var generator = (function () {
 
         tiles.push({x: 0, y: 0,
                     t: TileElevator(false, options.up, options.down)});
+
+        if (options.keycard === true) {
+            addOnBlueTile(tiles, TileKeycard());
+        }
+        if (options.escape === true) {
+            addOnBlueTile(tiles, TileEscapePod());
+        }
 
         return {tiles: tiles, options: options, x: 0, y: 0};
     };
@@ -441,6 +488,16 @@ var game = (function () {
         };
     },
 
+    getCorpseEulogy = function (name) {
+        var text = [
+            'Here lies ' + name + '.',
+            'The sad state of ' + name + '.',
+            'Rest here, ' + name + '.',
+            'Sadly, ' + name + ' is gone.',
+        ];
+
+        return text[Math.floor(Math.random() * text.length)];
+    },
     padTwoDigits = function (x) {
         return ('0' + x.toString()).substr(-2);
     },
@@ -515,6 +572,7 @@ var game = (function () {
             .updateBlocking()
             .updateVisible(player.x, player.y, 10);
         player.power -= player.light_sources;
+        player.power -= 10; // constant drain
         console.log(player.light_sources);
     },
     renderStars = function () {
@@ -566,11 +624,9 @@ var game = (function () {
         map['open01'] = generator.generateShipOpenFloor(
             false, {up: 'ship02', down: 'open02'});
         map['open02'] = generator.generateShipOpenFloor(
-            false, {up: 'open01', down: 'open03'});
+            false, {up: 'open01', down: 'open03', keycard: true});
         map['open03'] = generator.generateShipOpenFloor(
-            false, {up: 'open02', down: 'open04'});
-        map['open04'] = generator.generateShipOpenFloor(
-            false, {up: 'open03', down: null});
+            false, {up: 'open02', down: null, escape: true});
 
         state = 'ship01';
         resetPlayer();
@@ -704,7 +760,27 @@ var game = (function () {
                     player.console.push('You hit the light switch.');
                     updateLighting();
                     found = true;
+                } else if (tile.t.name) {
+                    console.log(tile);
+                    player.console.push(getCorpseEulogy(tile.t.name));
+                    found = true;
+                } else if (tile.t.keycard) {
+                    if (player.keycard === undefined) {
+                        player.keycard = true;
+                        player.console.push('You pick up a keycard copy.');
+                    } else {
+                        player.console.push('You already have the keycard.');
+                    }
+                    found = true;
+                } else if (tile.t.escape) {
+                    if (player.keycard === undefined) {
+                        player.console.push('You need a keycard to escape!');
+                    } else {
+                        player.console.push('You win.');
+                    }
+                    found = true;
                 }
+                console.log(tile);
             });
             if (!found) {
                 player.console.push('Nothing here.');
@@ -801,6 +877,7 @@ var game = (function () {
         .loadImage('oryx_planet.png', 'planet', loadImagePlanet)
         .loadImage('oryx_floors.png', 'floors')
         .loadImage('oryx_player.png', 'player')
+        .loadImage('oryx_items.png', 'items')
         .registerKeydown(keydownTitle);
 
     initStars();
