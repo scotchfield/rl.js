@@ -420,6 +420,11 @@ var generator = (function () {
             addOnBlueTile(tiles, TileEscapePod());
         }
 
+        j = Math.floor(Math.random() * 50) + 50;
+        for (i = 0; i < j; i += 1) {
+            addOnBlueTile(tiles, TileSquare());
+        }
+
         return {tiles: tiles, options: options, x: 0, y: 0};
     };
 
