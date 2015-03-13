@@ -139,7 +139,6 @@ var generator = (function () {
                               {id: 'floors', x: 8, y: 0, w: 8, h: 8},
                               {id: 'floors', x: 48, y: 0, w: 8, h: 8});
         t.light_toggle = true;
-        t.lighting = lit;
         return t;
     },
     TileWallLightBottom = function (lit) {
@@ -147,7 +146,6 @@ var generator = (function () {
                               {id: 'floors', x: 8, y: 16, w: 8, h: 8},
                               {id: 'floors', x: 48, y: 16, w: 8, h: 8});
         t.light_toggle = true;
-        t.lighting = lit;
         return t;
     },
     TileWallLightLeft = function (lit) {
@@ -155,7 +153,6 @@ var generator = (function () {
                               {id: 'floors', x: 8, y: 24, w: 8, h: 8},
                               {id: 'floors', x: 48, y: 24, w: 8, h: 8});
         t.light_toggle = true;
-        t.lighting = lit;
         return t;
     },
     TileWallLightRight = function (lit) {
@@ -163,7 +160,6 @@ var generator = (function () {
                               {id: 'floors', x: 8, y: 8, w: 8, h: 8},
                               {id: 'floors', x: 48, y: 8, w: 8, h: 8});
         t.light_toggle = true;
-        t.lighting = lit;
         return t;
     },
 
@@ -176,16 +172,16 @@ var generator = (function () {
     generateShipUpperHallway = function (tiles, options, x, y, lit) {
         var i, j, x_offset = Math.floor(options.room_width * 0.5);
 
-        replaceTileWith(x - x_offset, y - 1, tiles, TileDoor(lit));
-        replaceTileWith(x + x_offset, y - 1, tiles, TileDoor(lit));
-        replaceTileWith(x - x_offset, y + 1, tiles, TileDoor(lit));
-        replaceTileWith(x + x_offset, y + 1, tiles, TileDoor(lit));
+        replaceTileWith(x - x_offset, y - 1, tiles, TileDoor());
+        replaceTileWith(x + x_offset, y - 1, tiles, TileDoor());
+        replaceTileWith(x - x_offset, y + 1, tiles, TileDoor());
+        replaceTileWith(x + x_offset, y + 1, tiles, TileDoor());
 
         for (i = -options.room_width + 1; i < options.room_width; i += 1) {
             tiles.push({x: x + i, y: y + 1 - options.room_height,
-                        t: TileWallHorizontal(lit)});
+                        t: TileWallHorizontal()});
             tiles.push({x: x + i, y: y - 1 + options.room_height,
-                        t: TileWallHorizontal(lit)});
+                        t: TileWallHorizontal()});
             if (Math.random() > 0.5) {
                 tiles.push({x: x + i, y: y + 1 - options.room_height,
                             t: TileWallLightTop(lit)});
@@ -195,29 +191,29 @@ var generator = (function () {
                             t: TileWallLightBottom(lit)});
             }
             for (j = y + 2 - options.room_height; j < y - 1; j += 1) {
-                tiles.push({x: x + i, y: j, t: TileGroundBlue(lit)});
+                tiles.push({x: x + i, y: j, t: TileGroundBlue()});
             }
             for (j = y - 2 + options.room_height; j > y + 1; j -= 1) {
-                tiles.push({x: x + i, y: j, t: TileGroundBlue(lit)});
+                tiles.push({x: x + i, y: j, t: TileGroundBlue()});
             }
         }
 
         for (i = y + 1 - options.room_height; i < y; i += 1) {
             if (i === y + 1 - options.room_height) {
-                tiles.push({x: x, y: i, t: TileWallTopT(lit)});
+                tiles.push({x: x, y: i, t: TileWallTopT()});
             } else if (i === y - 1) {
-                tiles.push({x: x, y: i, t: TileWallBottomT(lit)});
+                tiles.push({x: x, y: i, t: TileWallBottomT()});
             } else {
-                tiles.push({x: x, y: i, t: TileWallVertical(lit)});
+                tiles.push({x: x, y: i, t: TileWallVertical()});
             }
         }
         for (i = y - 1 + options.room_height; i > y; i -= 1) {
             if (i === y - 1 + options.room_height) {
-                tiles.push({x: x, y: i,t: TileWallBottomT(lit)});
+                tiles.push({x: x, y: i,t: TileWallBottomT()});
             } else if (i === y + 1) {
-                tiles.push({x: x, y: i,t: TileWallTopT(lit)});
+                tiles.push({x: x, y: i,t: TileWallTopT()});
             } else {
-                tiles.push({x: x, y: i, t: TileWallVertical(lit)});
+                tiles.push({x: x, y: i, t: TileWallVertical()});
             }
         }
 
@@ -236,29 +232,29 @@ var generator = (function () {
             rl.removeTilesAt(i, y + 1, tiles);
 
             if (i === -1) {
-                tiles.push({x: i, y: y - 1, t: TileWallBottomRight(lit)});
-                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
-                tiles.push({x: i, y: y + 1, t: TileWallTopRight(lit)});
+                tiles.push({x: i, y: y - 1, t: TileWallBottomRight()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallTopRight()});
             } else if (i === 0) {
-                tiles.push({x: i, y: y - 1, t: TileGroundBlue(lit)});
-                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
-                tiles.push({x: i, y: y + 1, t: TileGroundBlue(lit)});
+                tiles.push({x: i, y: y - 1, t: TileGroundBlue()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileGroundBlue()});
             } else if (i === 1) {
-                tiles.push({x: i, y: y - 1, t: TileWallBottomLeft(lit)});
-                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
-                tiles.push({x: i, y: y + 1, t: TileWallTopLeft(lit)});
+                tiles.push({x: i, y: y - 1, t: TileWallBottomLeft()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallTopLeft()});
             } else if (i === i_min) {
-                tiles.push({x: i, y: y - 1, t: TileWallLeftT(lit)});
-                tiles.push({x: i, y: y, t: TileWallVertical(lit)});
-                tiles.push({x: i, y: y + 1, t: TileWallLeftT(lit)});
+                tiles.push({x: i, y: y - 1, t: TileWallLeftT()});
+                tiles.push({x: i, y: y, t: TileWallVertical()});
+                tiles.push({x: i, y: y + 1, t: TileWallLeftT()});
             } else if (i === i_max) {
-                tiles.push({x: i, y: y - 1, t: TileWallRightT(lit)});
-                tiles.push({x: i, y: y, t: TileWallVertical(lit)});
-                tiles.push({x: i, y: y + 1, t: TileWallRightT(lit)});
+                tiles.push({x: i, y: y - 1, t: TileWallRightT()});
+                tiles.push({x: i, y: y, t: TileWallVertical()});
+                tiles.push({x: i, y: y + 1, t: TileWallRightT()});
             } else {
-                tiles.push({x: i, y: y - 1, t: TileWallHorizontal(lit)});
-                tiles.push({x: i, y: y, t: TileGroundBlue(lit)});
-                tiles.push({x: i, y: y + 1, t: TileWallHorizontal(lit)});
+                tiles.push({x: i, y: y - 1, t: TileWallHorizontal()});
+                tiles.push({x: i, y: y, t: TileGroundBlue()});
+                tiles.push({x: i, y: y + 1, t: TileWallHorizontal()});
             }
         };
 
@@ -270,7 +266,7 @@ var generator = (function () {
 
     exports.generateShipUpper = function (lit, options) {
         var tiles = [], i, i_min, i_max, x_dist, tile_obj,
-            options = options || {};
+            options = options || {}, light_sources = 0;
 
         if (options.room_width === undefined) {
             options.room_width = 5;
@@ -284,17 +280,17 @@ var generator = (function () {
 
         for (i = i_min; i <= i_max; i += 1) {
             if (i === i_min) {
-                tiles.push({x: -1, y: i, t: TileWallTopT(lit)});
-                tiles.push({x: 0, y: i, t: TileWallHorizontal(lit)});
-                tiles.push({x: 1, y: i, t: TileWallTopT(lit)});
+                tiles.push({x: -1, y: i, t: TileWallTopT()});
+                tiles.push({x: 0, y: i, t: TileWallHorizontal()});
+                tiles.push({x: 1, y: i, t: TileWallTopT()});
             } else if (i === i_max) {
-                tiles.push({x: -1, y: i, t: TileWallBottomT(lit)});
-                tiles.push({x: 0, y: i, t: TileWallHorizontal(lit)});
-                tiles.push({x: 1, y: i, t: TileWallBottomT(lit)});
+                tiles.push({x: -1, y: i, t: TileWallBottomT()});
+                tiles.push({x: 0, y: i, t: TileWallHorizontal()});
+                tiles.push({x: 1, y: i, t: TileWallBottomT()});
             } else {
-                tiles.push({x: -1, y: i, t: TileWallVertical(lit)});
-                tiles.push({x: 0, y: i, t: TileGroundBlue(lit)});
-                tiles.push({x: 1, y: i, t: TileWallVertical(lit)});
+                tiles.push({x: -1, y: i, t: TileWallVertical()});
+                tiles.push({x: 0, y: i, t: TileGroundBlue()});
+                tiles.push({x: 1, y: i, t: TileWallVertical()});
             }
         }
 
@@ -307,27 +303,34 @@ var generator = (function () {
 
         for (i = i_min; i <= i_max; i += 1) {
             if (i === i_min) {
-                replaceTileWith(-x_dist, i, tiles, TileWallTopLeft(lit));
-                replaceTileWith(x_dist, i, tiles, TileWallTopRight(lit));
+                replaceTileWith(-x_dist, i, tiles, TileWallTopLeft());
+                replaceTileWith(x_dist, i, tiles, TileWallTopRight());
             } else if (i === i_max) {
-                replaceTileWith(-x_dist, i, tiles, TileWallBottomLeft(lit));
-                replaceTileWith(x_dist, i, tiles, TileWallBottomRight(lit));
+                replaceTileWith(-x_dist, i, tiles, TileWallBottomLeft());
+                replaceTileWith(x_dist, i, tiles, TileWallBottomRight());
             } else {
                 tile_obj = rl.tilesAt(-options.room_width * 2, i, tiles);
                 if (tile_obj.length > 0 && tile_obj[0].t.blocking !== true) {
-                    replaceTileWith(-x_dist, i, tiles, TileWallVertical(lit));
-                    replaceTileWith(x_dist, i, tiles, TileWallVertical(lit));
+                    replaceTileWith(-x_dist, i, tiles, TileWallVertical());
+                    replaceTileWith(x_dist, i, tiles, TileWallVertical());
                 }
             }
         }
 
         tiles.push({x: 0, y: options.room_height * 2 - 1,
-                    t: TileElevator(lit, options.up, options.down)});
+                    t: TileElevator(false, options.up, options.down)});
 
         rl.keepTopBlockingTiles(tiles);
 
+        tiles.forEach(function (t) {
+            if (t.t.light_toggle && t.t.lit) {
+                light_sources += 1;
+            }
+        });
+
         return {tiles: tiles, options: options,
-                x: 0, y: options.room_height * 2 - 1};
+                x: 0, y: options.room_height * 2 - 1,
+                light_sources: light_sources};
     };
 
     exports.generateShipOpenFloor = function (lit, options) {
@@ -339,33 +342,33 @@ var generator = (function () {
             for (j = -options.room_radius; j <= options.room_radius; j += 1) {
                 if (j === -options.room_radius) {
                     if (i === -options.room_radius) {
-                        tiles.push({x: i, y: j, t: TileWallTopLeft(lit)});
+                        tiles.push({x: i, y: j, t: TileWallTopLeft()});
                     } else if (i === options.room_radius) {
-                        tiles.push({x: i, y: j, t: TileWallTopRight(lit)});
+                        tiles.push({x: i, y: j, t: TileWallTopRight()});
                     } else {
-                        tiles.push({x: i, y: j, t: TileWallHorizontal(lit)});
+                        tiles.push({x: i, y: j, t: TileWallHorizontal()});
                     }
                 } else if (j === options.room_radius) {
                     if (i === -options.room_radius) {
-                        tiles.push({x: i, y: j, t: TileWallBottomLeft(lit)});
+                        tiles.push({x: i, y: j, t: TileWallBottomLeft()});
                     } else if (i === options.room_radius) {
-                        tiles.push({x: i, y: j, t: TileWallBottomRight(lit)});
+                        tiles.push({x: i, y: j, t: TileWallBottomRight()});
                     } else {
-                        tiles.push({x: i, y: j, t: TileWallHorizontal(lit)});
+                        tiles.push({x: i, y: j, t: TileWallHorizontal()});
                     }
                 } else {
                     if (i === -options.room_radius ||
                             i === options.room_radius) {
-                        tiles.push({x: i, y: j, t: TileWallVertical(lit)});
+                        tiles.push({x: i, y: j, t: TileWallVertical()});
                     } else {
-                        tiles.push({x: i, y: j, t: TileGroundBlue(lit)});
+                        tiles.push({x: i, y: j, t: TileGroundBlue()});
                     }
                 }
             }
         }
 
         tiles.push({x: 0, y: 0,
-                    t: TileElevator(lit, options.up, options.down)});
+                    t: TileElevator(false, options.up, options.down)});
 
         return {tiles: tiles, options: options, x: 0, y: 0};
     };
@@ -431,6 +434,7 @@ var game = (function () {
                 player[player.d].render(x, y);
             },
             console: [],
+            light_sources: 0,
         };
     },
 
@@ -484,6 +488,25 @@ var game = (function () {
         });
         render();
     },
+    updateLighting = function () {
+        rl.applyTiles(function (t) {
+            if (t.t.light_toggle !== true &&
+                    typeof t.t.setLit === 'function') {
+                t.t.setLit(false);
+            }
+        });
+        rl.applyTiles(function (tile) {
+            if (tile.t.light_toggle && tile.t.lit) {
+                rl.applyTiles(function (t) {
+                    if (!rl.blockedLine(t.x, t.y, tile.x, tile.y)) {
+                        if (typeof t.t.setLit === 'function') {
+                            t.t.setLit(true);
+                        }
+                    }
+                });
+            };
+        });
+    },
     updateGame = function () {
         rl.updateTilesIndex()
             .updateBlocking()
@@ -522,7 +545,7 @@ var game = (function () {
     },
 
     setup = function () {
-        var i, j;
+        var i;
 
         map['ship01'] = generator.generateShipUpper(
             true, {up: null, down: 'ship02'});
@@ -542,10 +565,17 @@ var game = (function () {
         state = 'ship01';
         resetPlayer();
 
+        for (i in map) {
+            if (map[i].light_sources !== undefined) {
+                player.light_sources += map[i].light_sources;
+            }
+        };
+
         player.x = -3;
         player.y = -map[state].options.room_height * 2 + 2;
 
         rl.setTiles(map[state].tiles);
+        updateLighting();
     },
 
     renderTitle = function () {
@@ -624,20 +654,11 @@ var game = (function () {
                 tiles = rl.tilesAt(player.x, player.y - 1);
             }
 
-            // todo: don't do it this way, set up light sources and then do
-            // a lighting pass, don't define everything to lit right away!
             rl.tilesAt(px, py).forEach(function (tile) {
                 if (tile.t.light_toggle) {
-                    console.log(tile.t.lit);
-                    tile.t.lit = !tile.t.lit;
+                    tile.t.setLit(!tile.t.lit);
                     player.console.push('You hit the light switch.');
-                    rl.applyTiles(function (t) {
-                        if (!rl.blockedLine(player.x, player.y, t.x, t.y)) {
-                            if (typeof t.t.setLit === 'function') {
-                                t.t.setLit(tile.t.lit);
-                            }
-                        }
-                    });
+                    updateLighting();
                     found = true;
                 }
             });
