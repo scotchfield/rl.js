@@ -21,13 +21,13 @@
     },
 
     keydown = function (e) {
-        if (e.keyCode === 68) {
+        if (rl.isKey(e, rl.key.d)) {
             player.x += 1;
-        } else if (e.keyCode === 65) {
+        } else if (rl.isKey(e, rl.key.a)) {
             player.x -= 1;
-        } else if (e.keyCode === 83) {
+        } else if (rl.isKey(e, rl.key.s)) {
             player.y += 1;
-        } else if (e.keyCode === 87) {
+        } else if (rl.isKey(e, rl.key.w)) {
             player.y -= 1;
         }
         player.x = player.x < 0 ? 0 : player.x;
