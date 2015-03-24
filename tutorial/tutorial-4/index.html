@@ -13,26 +13,35 @@
 
     render = function () {
         rl.clear()
+            .render(0, 0)
             .style(player.style)
             .write(player.c, player.x, player.y);
     },
 
     keydown = function (e) {
+        var nx = player.x, ny = player.y;
+
         if (rl.isKey(e, rl.key.d)) {
-            player.x += 1;
+            nx += 1;
         } else if (rl.isKey(e, rl.key.a)) {
-            player.x -= 1;
+            nx -= 1;
         } else if (rl.isKey(e, rl.key.s)) {
-            player.y += 1;
+            ny += 1;
         } else if (rl.isKey(e, rl.key.w)) {
-            player.y -= 1;
+            ny -= 1;
+        }
+
+        if (rl.canMoveTo(nx, ny)) {
+            player.x = nx;
+            player.y = ny;
         }
 
         render();
     };
 
     rl.create('game_canvas', {width: width, height: height})
-        .registerKeydown(keydown);
+        .registerKeydown(keydown)
+        .addTile(1, 1);
 
     render();
 }());
