@@ -1,37 +1,45 @@
 var game = (function () {
-    var canvas, state, timer,
-        player, width = 60, height = 35,
-        map = {};
+    var player, width = 30, height = 20;
 
-    var resetPlayer = function () {
+    resetPlayer = function () {
         player = {
             x: 5, y: 1, c: '@', style: '#ffffff'
         };
     },
 
     setup = function () {
-        state = 'map';
         resetPlayer();
-        rl.addTile(3, 3, rl.TileImgNoBlock('oryx', 0, 0, 8, 8))
-            .addTile(5, 3, rl.TileImgNoBlock('oryx', 8, 0, 8, 8))
-            .addTile(7, 3, rl.TileImgNoBlock('oryx', 16, 0, 8, 8))
-            .addTile(9, 3, rl.TileImgNoBlock('oryx', 24, 0, 8, 8))
-            .addTile(11, 3, rl.TileImgNoBlock('oryx', 32, 0, 8, 8))
-            .addTile(13, 3, rl.TileImgNoBlock('oryx', 40, 0, 8, 8))
-            .addTile(4, 5, rl.TileImgNoBlock('oryx', 0, 8, 8, 8))
-            .addTile(6, 5, rl.TileImgNoBlock('oryx', 8, 8, 8, 8))
-            .addTile(8, 5, rl.TileImgNoBlock('oryx', 16, 8, 8, 8))
-            .addTile(10, 5, rl.TileImgNoBlock('oryx', 24, 8, 8, 8))
-            .addTile(12, 5, rl.TileImgNoBlock('oryx', 32, 8, 8, 8))
-            .addTile(14, 5, rl.TileImgNoBlock('oryx', 40, 8, 8, 8))
-
+        rl.addTile(3, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 0, y: 0, w: 8, h: 8}))
+            .addTile(5, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 8, y: 0, w: 8, h: 8}))
+            .addTile(7, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 16, y: 0, w: 8, h: 8}))
+            .addTile(9, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 24, y: 0, w: 8, h: 8}))
+            .addTile(11, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 32, y: 0, w: 8, h: 8}))
+            .addTile(13, 3, rl.TileImgNoBlock(
+                {id: 'oryx', x: 40, y: 0, w: 8, h: 8}))
+            .addTile(4, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 0, y: 8, w: 8, h: 8}))
+            .addTile(6, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 8, y: 8, w: 8, h: 8}))
+            .addTile(8, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 16, y: 8, w: 8, h: 8}))
+            .addTile(10, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 24, y: 8, w: 8, h: 8}))
+            .addTile(12, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 32, y: 8, w: 8, h: 8}))
+            .addTile(14, 5, rl.TileImgNoBlock(
+                {id: 'oryx', x: 40, y: 8, w: 8, h: 8}));
     },
 
     render = function () {
         rl.clear()
             .render(player.x - rl.cx(), player.y - rl.cy())
             .style(player.style)
-            .write(player.c, rl.cx(), rl.cy());//player.x, player.y);
+            .write(player.c, rl.cx(), rl.cy());
     },
 
     keydownMap = function keydown(e) {
@@ -65,5 +73,4 @@ var game = (function () {
         .loadImage('oryx_tiles.png', 'oryx', render);
 
     setup();
-    render();
 }());
