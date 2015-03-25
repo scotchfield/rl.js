@@ -1,0 +1,66 @@
+<!doctype html>
+<html><body>
+<div id="game_canvas"></div>
+<!-- Note the relative location of rl.js here. -->
+<script src="../../src/rl.js" type="text/javascript"></script>
+<script type="text/javascript">
+(function () {
+    var width = 20, height = 20,
+
+    player = {
+        x: 1, y: 1, c: '@', style: '#ffffff',
+    },
+
+    setup = function () {
+        var i, j;
+
+        for (i = 0; i < width; i += 1) {
+            for (j = 0; j < height; j += 1) {
+                if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
+                    rl.addTile(i, j, rl.TileImg(
+                        {id: 'oryx', x: 16, y: 0, w: 8, h: 8}));
+                } else {
+                    rl.addTile(i, j, rl.TileImgNoBlock(
+                        {id: 'oryx', x: 8, y: 0, w: 8, h: 8}));
+                }
+            }
+        }
+    },
+
+    render = function () {
+        rl.clear()
+            .render(0, 0)
+            .style(player.style)
+            .write(player.c, player.x, player.y);
+    },
+
+    keydown = function (e) {
+        var nx = player.x, ny = player.y;
+
+        if (rl.isKey(e, rl.key.d)) {
+            nx += 1;
+        } else if (rl.isKey(e, rl.key.a)) {
+            nx -= 1;
+        } else if (rl.isKey(e, rl.key.s)) {
+            ny += 1;
+        } else if (rl.isKey(e, rl.key.w)) {
+            ny -= 1;
+        }
+
+        if (rl.canMoveTo(nx, ny)) {
+            player.x = nx;
+            player.y = ny;
+        }
+
+        render();
+    };
+
+    rl.create('game_canvas', {width: width, height: height})
+        .registerKeydown(keydown)
+        .loadImage('oryx-tiles.png', 'oryx', render);
+
+    setup();
+    render();
+}());
+</script>
+</body></html>
