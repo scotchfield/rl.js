@@ -1,7 +1,7 @@
-# Tutorial 4 (Walls and Objects)
+# Tutorial 4 (Walls and Terrain)
 ## Introduction
 
-Our player can move around the canvas in response to keydown events. Now, let's add some walls and objects to the world to interact with. We'll collide with walls, preventing us from moving past them, and we'll add some terrain and other features that can be walked over.
+Our player can move around the canvas in response to keydown events. Now, let's add some walls and terrain to the world to interact with. We'll collide with walls, preventing us from moving past them, and we'll add some terrain and other features that can be walked over.
 
 ## Want to skip all this and just see the source?
 
@@ -133,3 +133,67 @@ If we try to walk through the wall, we're stopped. Hurrah!
 
 ## Step Three: Non-blocking Tiles
 
+Tiles shouldn't always block the player. For example, we might want to have tiles representing the ground that the player is walking on, including grass, stone, or wood.
+
+First, let's make the previous rl.addTile call explicit. We'll add the third argument, and call the function that's actually used to create a standard blocking tile.
+
+    rl.create('game_canvas', {width: width, height: height})
+        .registerKeydown(keydown)
+        .addTile(1, 1, rl.TileBlocking());
+
+rl.TileBlocking returns an object containing all the information rl.js needs to render a regular white blocking tile to the screen.
+
+A similar tile exists, called rl.TileNonBlocking. This acts exactly as the blocking tile (solid white square at the specified position), but doesn't cause rl.canMoveTo to declare that the player can't be in that position.
+
+Let's amend the code to add a non-blocking tile.
+
+    rl.create('game_canvas', {width: width, height: height})
+        .registerKeydown(keydown)
+        .addTile(1, 1, rl.TileBlocking())
+        .addTile(2, 2, rl.TileNonBlocking());
+
+![A non-blocking tile](tutorial-4/noblock-tile.png)
+
+The first tile prevents the player from walking through it, while the second allows the player to pass right over.
+
+Both tiles are white, just like the player, which is kind of annoying. Each of these tile functions can be extended to make things nicer, and we'll see how later. However, for the time being, we can use the fact that rl.TileNonBlocking accepts an argument to change the default colour. Let's build a basic level.
+
+Remove the two rl.addTile calls, and use the following code:
+
+    rl.create('game_canvas', {width: width, height: height})
+        .registerKeydown(keydown);
+
+    setup();
+    render();
+
+Next, move the player's default position to 1, 1.
+
+    player = {
+        x: 1, y: 1, c: '@', style: '#ffffff',
+    },
+
+Finally, add the following function.
+
+    setup = function () {
+        var i, j;
+
+        for (i = 0; i <	width; i += 1) {
+            for (j = 0; j < height; j += 1) {
+                if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
+                    rl.addTile(i, j, rl.TileBlocking());
+                } else {
+                    rl.addTile(i, j, rl.TileNonBlocking('#006600'));
+                }
+            }
+        }
+    },
+
+For each position along the edge of the canvas, store a blocking wall tile. For each position inside the outer wall, draw a non-blocking tile in dark green.
+
+![Outer wall and inner grass](tutorial-4/all-tiles.png)
+
+The player is prevented from walking off the edge of the screen, and we have some nice grass under our feet. (Well, if you stretch your imagination a little bit--hey, these are roguelikes!)
+
+## Conclusion
+
+With player movement and tiles, we can start building basic frameworks for games. We'll extend these functions in the next tutorial to show how other symbols and images can replace the flat coloured blocks.

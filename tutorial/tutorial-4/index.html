@@ -8,7 +8,21 @@
     var width = 20, height = 20,
 
     player = {
-        x: 0, y: 0, c: '@', style: '#ffffff',
+        x: 1, y: 1, c: '@', style: '#ffffff',
+    },
+
+    setup = function () {
+        var i, j;
+
+        for (i = 0; i < width; i += 1) {
+            for (j = 0; j < height; j += 1) {
+                if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
+                    rl.addTile(i, j, rl.TileBlocking());
+                } else {
+                    rl.addTile(i, j, rl.TileNonBlocking('#006600'));
+                }
+            }
+        }
     },
 
     render = function () {
@@ -40,9 +54,9 @@
     };
 
     rl.create('game_canvas', {width: width, height: height})
-        .registerKeydown(keydown)
-        .addTile(1, 1);
+        .registerKeydown(keydown);
 
+    setup();
     render();
 }());
 </script>
