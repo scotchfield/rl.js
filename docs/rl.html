@@ -88,6 +88,7 @@ matching keyCode 65 will match ‘a’ and ‘A’.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    rl.key = {
+        space: {keyCode: <span class="hljs-number">32</span>},
         left: {keyCode: <span class="hljs-number">37</span>},
         up: {keyCode: <span class="hljs-number">38</span>},
         right: {keyCode: <span class="hljs-number">39</span>},
@@ -185,6 +186,18 @@ for new blocking tiles (see TileWall for an example).</p>
     rl.TileBlocking.prototype.blocking = <span class="hljs-literal">true</span>;
     rl.TileBlocking.prototype.render = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
         rl.style(<span class="hljs-keyword">this</span>.style()).square(x, y);
+    };
+
+    rl.TileNonBlocking = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(colour)</span> </span>{
+        <span class="hljs-keyword">var</span> that = rl.TileBlocking();
+
+        that.blocking = <span class="hljs-literal">false</span>;
+
+        <span class="hljs-keyword">if</span> (colour !== <span class="hljs-literal">undefined</span>) {
+            that.style = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">return</span> colour; }
+        }
+
+        <span class="hljs-keyword">return</span> that;
     };</pre></div></div>
             
         </li>
@@ -796,7 +809,7 @@ Modified from rosettacode.org/wiki/Bitmap/Bresenham%27s_line_algorithm</p>
             <span class="hljs-keyword">if</span> (x0 === x1 &amp;&amp; y0 === y1) {
                 <span class="hljs-keyword">break</span>;
             }
-            <span class="hljs-keyword">if</span> (blocking[x0][y0] === <span class="hljs-literal">true</span>) {
+            <span class="hljs-keyword">if</span> (blocking[x0] &amp;&amp; blocking[x0][y0] === <span class="hljs-literal">true</span>) {
                 <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
             }
             err2 = err;
@@ -828,10 +841,17 @@ visible from the given (x, y) position.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    rl.updateVisible = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y)</span> </span>{
+            <div class="content"><div class='highlight'><pre>    rl.updateVisible = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, dist)</span> </span>{
         tiles.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(t)</span> </span>{
             t.visible = <span class="hljs-literal">false</span>;
-            <span class="hljs-keyword">if</span> (! rl.blockedLine(x, y, t.x, t.y)) {
+            <span class="hljs-keyword">if</span> (!rl.blockedLine(x, y, t.x, t.y)) {
+                <span class="hljs-keyword">if</span> (dist !== <span class="hljs-literal">undefined</span>) {
+                    <span class="hljs-keyword">var</span> d = <span class="hljs-built_in">Math</span>.sqrt(<span class="hljs-built_in">Math</span>.pow(x - t.x, <span class="hljs-number">2</span>) +
+                                      <span class="hljs-built_in">Math</span>.pow(y - t.y, <span class="hljs-number">2</span>));
+                    <span class="hljs-keyword">if</span> (d &gt; dist) {
+                        <span class="hljs-keyword">return</span>;
+                    }
+                }
                 t.visible = <span class="hljs-literal">true</span>;
                 t.observed = <span class="hljs-literal">true</span>;
             }
