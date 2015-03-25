@@ -98,6 +98,18 @@ var rl = (function () {
         rl.style(this.style()).square(x, y);
     };
 
+    rl.TileNonBlocking = function (colour) {
+        var that = rl.TileBlocking();
+
+        that.blocking = false;
+
+        if (colour !== undefined) {
+            that.style = function () { return colour; }
+        }
+
+        return that;
+    };
+
     // By using TileBlocking as a template and modifying the style
     // property, we can enable simple coloured walls.
     rl.TileWall = function (colour) {
