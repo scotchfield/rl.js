@@ -11,6 +11,8 @@ Introduction
 
 Step One.
 
+![Animated water tiles example](tutorial-6/water.gif)
+
 ## Conclusion
 
 Conclusion.
