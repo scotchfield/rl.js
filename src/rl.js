@@ -348,6 +348,8 @@ var rl = (function () {
     // Render any tiles that we're storing to the canvas.
     // x and y represent the top-left corner of the screen.
     rl.render = function (x, y) {
+        x = x || 0;
+        y = y || 0;
         tiles.forEach(function (t) {
             if (t.x >= x && t.x < x + options.width &&
                     t.y >= y && t.y < y + options.height) {
@@ -357,7 +359,7 @@ var rl = (function () {
                     ctx.globalAlpha = options.baseAlpha;
                     t.t.render(t.x - x, t.y - y);
                     ctx.globalAlpha = 1;
-                }
+                } else { console.log('nope'); }
             }
         });
 
