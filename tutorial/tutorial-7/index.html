@@ -1,0 +1,44 @@
+<!doctype html>
+<html><body>
+<div id="game_canvas"></div>
+<!-- Note the relative location of rl.js here. -->
+<script src="../../src/rl.js" type="text/javascript"></script>
+<script type="text/javascript">
+(function () {
+    var width = 20, height = 20, timer,
+
+    player = {
+        x: 1, y: 1,
+    },
+
+    render = function () {},
+
+    keydown = function (e) {
+        var nx = player.x, ny = player.y;
+
+        if (rl.isKey(e, rl.key.d)) {
+            nx += 1;
+        } else if (rl.isKey(e, rl.key.a)) {
+            nx -= 1;
+        } else if (rl.isKey(e, rl.key.s)) {
+            ny += 1;
+        } else if (rl.isKey(e, rl.key.w)) {
+            ny -= 1;
+        }
+
+        if (rl.canMoveTo(nx, ny)) {
+            player.x = nx;
+            player.y = ny;
+        }
+
+        render();
+    };
+
+    rl.create('game_canvas', {width: width, height: height})
+        .loadImage('oryx_player.png', 'player')
+        .loadImage('oryx_items.png', 'items')
+        .registerKeydown(keydown);
+}());
+</script>
+  </body>
+</html>
