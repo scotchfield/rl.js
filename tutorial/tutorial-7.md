@@ -68,3 +68,4 @@ So far, we have an empty world and an invisible player. However, we are loading 
 
 ## Step Two: Custom Player Tiles
 
+Let's move away from using standard ASCII symbols like the at-sign, and use tiles to represent the player.
