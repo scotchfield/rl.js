@@ -359,7 +359,7 @@ var rl = (function () {
                     ctx.globalAlpha = options.baseAlpha;
                     t.t.render(t.x - x, t.y - y);
                     ctx.globalAlpha = 1;
-                } else { console.log('nope'); }
+                }
             }
         });
 
