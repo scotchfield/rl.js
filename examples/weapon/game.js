@@ -1,3 +1,34 @@
+var generator = (function () {
+    'use strict';
+
+    var exports = {}, trees = [],
+
+    registerTrees = function (trees) {
+        var i, j;
+        for (i = 0; i < 9; i += 1) {
+            for (j = 0; j < 7; j += 1) {
+                trees.push(rl.TileImgNoBlock({id: 'packb',
+                                x: i * 8, y: j + 8, w: 8, h: 8}));
+            }
+        }
+    };
+
+    registerTrees(trees);
+
+    exports.generateWorld = function (tiles, options) {
+        var i, j, m = 100;
+
+        for (i = -m; i <= m; i += 1) {
+            for (j = -m; j <= m; j += 1) {
+                tiles.push({x: i, y: j,
+                            t: trees[Math.floor(Math.random()*trees.length)]});
+            }
+        }
+    };
+
+    return exports;
+})();
+
 var game = (function () {
     'use strict';
 
@@ -50,7 +81,12 @@ var game = (function () {
     },
 
     setup = function () {
+        var tiles = [];
+
         resetPlayer();
+        generator.generateWorld(tiles, {});
+
+        rl.setTiles(tiles);
     };
 
     render_cb.removeCb = function(cb) {
@@ -231,6 +267,7 @@ var game = (function () {
 
     rl.create('game_canvas', options)
         .loadImage('oryx_player.png', 'player')
+        .loadImage('oryx_packb.png', 'packb')
         .registerKeydown(keydownTitle);
 
     state = 'title';
